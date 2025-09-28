@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Estúdios Candieiro — Painel</title>
 <link rel="icon" href="/assets/logo.png">
-<meta name="color-scheme" content="dark">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="dark">
 <style>
 :root{
   --bg1:#0b0b0d; --bg2:#1a0f12; --bg3:#231218;
@@ -24,7 +24,6 @@ body{
     radial-gradient(1200px 800px at 70% 20%, rgba(218,45,64,.08), rgba(0,0,0,0)),
     linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 60%, var(--bg3) 100%);
 }
-
 .wrap{max-width:1060px;margin:28px auto 48px;padding:0 16px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .logo{display:flex;align-items:center;gap:12px}
@@ -32,9 +31,10 @@ body{
 .sub{color:var(--muted);font-size:13px}
 .avatar-sm{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
 
-nav{display:flex;gap:8px;flex-wrap:wrap}
-a.tab{display:inline-block;text-decoration:none;background:#151e2c;border:1px solid var(--line);color:#cfe6ff;padding:8px 12px;border-radius:10px;cursor:pointer}
-a.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#222;border-color:#d4b100}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tabs label{display:inline-block;background:#151e2c;border:1px solid var(--line);color:#cfe6ff;padding:8px 12px;border-radius:10px;cursor:pointer}
+.tabs input{display:none}
+.tabs input:checked + label{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#222;border-color:#d4b100}
 
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .row{display:flex;gap:16px;flex-wrap:wrap}
@@ -44,269 +44,243 @@ a.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2));colo
 .big{font-size:34px;font-weight:800;letter-spacing:.2px}
 .bar{height:12px;background:#0e1420;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .bar>span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease}
+
 .select,input,textarea{width:100%;background:#0e1420;color:#cfe6ff;border:1px solid var(--line);border-radius:10px;padding:10px}
-label{display:block;font-size:12px;color:#9fb0c8;margin:4px 0}
-
-.view{display:none}.view.active{display:block}
-.muted{color:var(--muted)} .small{font-size:12px}
-
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:10px;border-bottom:1px dashed #223046;text-align:left}
-th{color:#a9bdd7;font-weight:600}
+label.field{display:block;font-size:12px;color:#9fb0c8;margin:6px 0 4px}
 
 .progress-steps{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:10px}
 .step{background:#0f1420;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
-.step.done{background:linear-gradient(180deg,#13212f,#0d161f)}
 .step .s-title{font-size:12px;color:#a9bdd7}
 .step .s-time{font-size:12px;color:#7ea0d1}
-.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px}
-.ok{background:var(--ok)} .warn{background:var(--warn)} .bad{background:var(--bad)} .blue{background:var(--blue)}
 
 .bars{display:flex;gap:8px;align-items:flex-end;height:120px;margin-top:8px}
 .bars .col{flex:1;background:linear-gradient(180deg,#ffcc00,#ffd84d);border:1px solid #d7b000;border-radius:6px 6px 0 0;min-width:28px;display:flex;align-items:flex-end;justify-content:center;color:#1d1700;font-weight:700}
 .bars .col small{display:block;padding:6px 2px}
 .bars .col.muted{background:linear-gradient(180deg,#243146,#1a232f);border-color:#1f2a3d;color:#a9bdd7}
 
-.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:900px){.meta-grid{grid-template-columns:1fr}}
-.donut{--size:160;--stroke:12;display:flex;align-items:center;gap:12px}
-.donut svg{width:var(--size)px;height:var(--size)px}
-.donut .bg{stroke:#1f2938;opacity:.9}
-.donut .fg{stroke:url(#g1);transition:stroke-dashoffset .7s ease}
-.kpi{display:flex;flex-direction:column;gap:2px}
-.kpi .value{font-size:28px;font-weight:800}
-.kpi .label{font-size:13px;color:#9fb0c8}
-.stack{height:18px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#0e1420;display:flex}
-.seg{height:100%}.g{background:linear-gradient(90deg,#2fe3a1,#8ef4cd)}
-.e{background:linear-gradient(90deg,#ffd166,#ffe9a6)}.p{background:linear-gradient(90deg,#6dc1ff,#a9d8ff)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px;border-bottom:1px dashed #223046;text-align:left}
+th{color:#a9bdd7;font-weight:600}
+
+.list ul{padding-left:18px} .small{font-size:12px} .muted{color:#9fb0c8}
+
+/* painéis das abas (CSS-only) */
+.panels>section{display:none}
+#tab-dashboard:checked ~ .panels #panel-dashboard{display:block}
+#tab-editor:checked ~ .panels #panel-editor{display:block}
+#tab-pesquisa:checked ~ .panels #panel-pesquisa{display:block}
+#tab-roteiros:checked ~ .panels #panel-roteiros{display:block}
+#tab-fontes:checked ~ .panels #panel-fontes{display:block}
+#tab-metas:checked ~ .panels #panel-metas{display:block}
+#tab-historico:checked ~ .panels #panel-historico{display:block}
 </style>
 </head>
 <body>
 <section class="wrap">
-  <!-- Header -->
   <div class="top">
     <div class="logo">
-      <img src="/assets/logo.png" alt="logo">
+      <img src="/assets/logo.png" alt="logo" onerror="this.style.display='none'">
       <div>
         <div style="font-weight:800">Estúdios Candieiro</div>
         <div class="sub">Painel de Produção — America/Fortaleza</div>
       </div>
     </div>
-    <img src="/assets/paulo.jpg" class="avatar-sm" alt="Paulo">
+    <img src="/assets/paulo.jpg" class="avatar-sm" alt="Paulo" onerror="this.style.display='none'">
   </div>
 
-  <!-- NAV (hash routing) -->
-  <nav id="tabs">
-    <a class="tab" href="#dashboard" data-view="dashboard">Dashboard</a>
-    <a class="tab" href="#editor" data-view="editor">Editor</a>
-    <a class="tab" href="#pesquisa" data-view="pesquisa">Pesquisa</a>
-    <a class="tab" href="#roteiros" data-view="roteiros">Roteiros</a>
-    <a class="tab" href="#fontes" data-view="fontes">Fontes</a>
-    <a class="tab" href="#metas" data-view="metas">Metas</a>
-    <a class="tab" href="#historico" data-view="historico">Histórico</a>
-  </nav>
+  <!-- TABS CSS-ONLY -->
+  <div class="tabs">
+    <input type="radio" name="tabs" id="tab-dashboard" checked>
+    <label for="tab-dashboard">Dashboard</label>
 
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="view">
-    <div class="row">
-      <div class="card" style="flex:2">
-        <div class="pill">Produção</div>
-        <label>Selecionar produção</label>
-        <select id="selProd" class="select"></select>
-        <div class="progress-steps" id="steps"></div>
-      </div>
-      <div class="card" style="flex:1">
-        <div class="pill">Próximo vídeo em</div>
-        <div id="countdown" class="big" style="margin:8px 0 6px">--:--:--</div>
-        <div class="muted small" id="nextLabel">Carregando…</div>
-        <div class="pill" style="margin-top:12px">Entre lançamentos</div>
-        <div class="bar" style="margin:8px 0"><span id="progress"></span></div>
-        <div class="muted small" id="progressLabel">—</div>
-      </div>
-    </div>
+    <input type="radio" name="tabs" id="tab-editor">
+    <label for="tab-editor">Editor</label>
 
-    <div class="row">
-      <div class="card">
-        <div class="pill">Ritmo semanal</div>
-        <div id="bars" class="bars"></div>
-        <p class="small muted">Publicações por semana (últimas 6 semanas)</p>
-      </div>
-      <div class="card">
-        <div class="pill">Workflow em andamento</div>
-        <ul id="flowList" class="small muted" style="line-height:1.9"></ul>
-      </div>
-    </div>
+    <input type="radio" name="tabs" id="tab-pesquisa">
+    <label for="tab-pesquisa">Pesquisa</label>
 
-    <div class="card">
-      <div class="pill">Linha do tempo</div>
-      <ul id="timeline" class="list"></ul>
-    </div>
-  </section>
+    <input type="radio" name="tabs" id="tab-roteiros">
+    <label for="tab-roteiros">Roteiros</label>
 
-  <!-- EDITOR -->
-  <section id="editor" class="view">
-    <div class="card">
-      <div class="pill">Cadastrar/Editar Produção (salva automaticamente)</div>
+    <input type="radio" name="tabs" id="tab-fontes">
+    <label for="tab-fontes">Fontes</label>
 
-      <form id="form" onsubmit="return false" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
-        <div><label>Título</label><input id="fTitulo" placeholder="Narrativas: Chico Mendes"></div>
-        <div><label>Selo</label>
-          <select id="fSelo" class="select">
-            <option>Narrativas</option><option>Arquivo Criminal</option><option>Inexplicável</option><option>Prévia</option><option>Abertos</option>
-          </select>
+    <input type="radio" name="tabs" id="tab-metas">
+    <label for="tab-metas">Metas</label>
+
+    <input type="radio" name="tabs" id="tab-historico">
+    <label for="tab-historico">Histórico</label>
+  </div>
+
+  <div class="panels">
+    <!-- DASHBOARD -->
+    <section id="panel-dashboard">
+      <div class="row">
+        <div class="card" style="flex:2">
+          <div class="pill">Produção</div>
+          <label class="field">Selecionar produção</label>
+          <select id="selProd" class="select"></select>
+          <div id="steps" class="progress-steps"></div>
         </div>
-        <div><label>Data & hora (YYYY-MM-DDTHH:MM)</label><input id="fData" placeholder="2025-11-14T18:00"></div>
-        <div><label>Link (opcional)</label><input id="fLink" placeholder="https://..."></div>
-
-        <div style="grid-column:1/-1"><div class="pill">Roteiro (PDF)</div></div>
-        <div><label>Anexar PDF</label><input id="fPDF" type="file" accept="application/pdf"></div>
-        <div><label>Notas do Roteiro</label><input id="fNotas" placeholder="Observações"></div>
-
-        <div style="grid-column:1/-1"><div class="pill">Avaliação do Roteiro</div></div>
-        <div><label>Força Narrativa</label><input id="rForca" type="number" min="1" max="5" value="4"></div>
-        <div><label>Impacto Emocional</label><input id="rEmocional" type="number" min="1" max="5" value="4"></div>
-        <div><label>Carga dramática & Sensibilidade</label><input id="rDrama" type="number" min="1" max="5" value="4"></div>
-        <div><label>Credibilidade</label><input id="rCred" type="number" min="1" max="5" value="4"></div>
-        <div><label>Originalidade</label><input id="rOrig" type="number" min="1" max="5" value="4"></div>
-
-        <div style="grid-column:1/-1"><div class="pill">Workflow da Produção</div></div>
-        <div><label><input type="checkbox" id="wPesquisa"> Pesquisa</label></div>
-        <div><label><input type="checkbox" id="wRoteiro"> Roteiro</label></div>
-        <div><label><input type="checkbox" id="wGravacao"> Gravação</label></div>
-        <div><label><input type="checkbox" id="wDecupagem"> Decupagem</label></div>
-        <div><label><input type="checkbox" id="wEdicao"> Edição</label></div>
-        <div><label><input type="checkbox" id="wPostagem"> Postagem</label></div>
-
-        <div style="grid-column:1/-1"><div class="pill">Pesquisa (links)</div></div>
-        <div style="grid-column:1/-1">
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <input id="linkTitulo" placeholder="Título do link">
-            <input id="linkURL" placeholder="https://...">
-            <button type="button" class="tab" id="addLink">Adicionar link</button>
-          </div>
-          <ul id="linksTmp" class="small muted"></ul>
+        <div class="card" style="flex:1">
+          <div class="pill">Próximo vídeo em</div>
+          <div id="countdown" class="big" style="margin:8px 0 6px">--:--:--</div>
+          <div id="nextLabel" class="muted small">Carregando…</div>
+          <div class="pill" style="margin-top:12px">Entre lançamentos</div>
+          <div class="bar" style="margin:8px 0"><span id="progress"></span></div>
+          <div id="progressLabel" class="muted small">—</div>
         </div>
-
-        <div style="grid-column:1/-1"><div class="pill">Metas</div></div>
-        <div><label>Meta de inscritos</label><input id="metaInscritos" type="number" placeholder="100000"></div>
-        <div><label>Prazo da meta (YYYY-MM-DD)</label><input id="metaPrazo" placeholder="2026-06-01"></div>
-        <div><label>Meta ritmo semanal (vídeos)</label><input id="metaRitmo" type="number" value="1"></div>
-      </form>
+      </div>
 
       <div class="row">
-        <button type="button" id="saveBtn" class="tab">Salvar/Adicionar produção</button>
-        <button type="button" id="clearBtn" class="tab">Limpar campos</button>
-        <button type="button" id="exportBtn" class="tab">Exportar JSON</button>
-        <label for="importFile" class="tab" style="cursor:pointer">Importar JSON<input id="importFile" type="file" accept=".json" style="display:none"></label>
-        <button type="button" id="syncLoad" class="tab">Recarregar do servidor</button>
-        <button type="button" id="syncSave" class="tab">Forçar salvar no servidor</button>
+        <div class="card">
+          <div class="pill">Ritmo semanal</div>
+          <div id="bars" class="bars"></div>
+          <p class="small muted">Publicações por semana (últimas 6 semanas)</p>
+        </div>
+        <div class="card">
+          <div class="pill">Workflow em andamento</div>
+          <ul id="flowList" class="small muted" style="line-height:1.9"></ul>
+        </div>
       </div>
 
-      <table style="margin-top:14px">
-        <thead><tr><th>Título</th><th>Selo</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tblBody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- PESQUISA -->
-  <section id="pesquisa" class="view">
-    <div class="card">
-      <div class="pill">Expositor de links</div>
-      <ul id="listaPesquisa" class="list"></ul>
-    </div>
-  </section>
-
-  <!-- ROTEIROS -->
-  <section id="roteiros" class="view">
-    <div class="card">
-      <div class="pill">Roteiros anexados</div>
-      <ul id="listaRoteiros" class="list"></ul>
-    </div>
-  </section>
-
-  <!-- FONTES -->
-  <section id="fontes" class="view">
-    <div class="card">
-      <div class="pill">Repositório de fontes</div>
-      <ul id="listaFontes" class="list"></ul>
-    </div>
-  </section>
-
-  <!-- METAS -->
-  <section id="metas" class="view">
-    <div class="card">
-      <div class="pill">Metas visuais</div>
-      <div id="metasVisual" class="meta-grid" style="margin-top:12px"></div>
-    </div>
-
-    <div class="row">
       <div class="card">
-        <div class="pill">Produção (Gravados / Editando / Publicados)</div>
-        <div class="stack" style="margin-top:8px">
-          <div class="seg g" id="segG" style="width:0%"></div>
-          <div class="seg e" id="segE" style="width:0%"></div>
-          <div class="seg p" id="segP" style="width:0%"></div>
+        <div class="pill">Linha do tempo</div>
+        <ul id="timeline" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- EDITOR -->
+    <section id="panel-editor">
+      <div class="card">
+        <div class="pill">Cadastrar/Editar Produção (salva automaticamente)</div>
+        <form id="form" onsubmit="return false" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+          <div><label class="field">Título</label><input id="fTitulo" placeholder="Narrativas: Chico Mendes"></div>
+          <div><label class="field">Selo</label>
+            <select id="fSelo" class="select">
+              <option>Narrativas</option><option>Arquivo Criminal</option><option>Inexplicável</option><option>Prévia</option><option>Abertos</option>
+            </select>
+          </div>
+          <div><label class="field">Data & hora (YYYY-MM-DDTHH:MM)</label><input id="fData" placeholder="2025-11-14T18:00"></div>
+          <div><label class="field">Link (opcional)</label><input id="fLink" placeholder="https://..."></div>
+
+          <div style="grid-column:1/-1"><div class="pill">Roteiro (PDF)</div></div>
+          <div><label class="field">Anexar PDF</label><input id="fPDF" type="file" accept="application/pdf"></div>
+          <div><label class="field">Notas do Roteiro</label><input id="fNotas" placeholder="Observações"></div>
+
+          <div style="grid-column:1/-1"><div class="pill">Avaliação do Roteiro</div></div>
+          <div><label class="field">Força Narrativa</label><input id="rForca" type="number" min="1" max="5" value="4"></div>
+          <div><label class="field">Impacto Emocional</label><input id="rEmocional" type="number" min="1" max="5" value="4"></div>
+          <div><label class="field">Carga dramática & Sensibilidade</label><input id="rDrama" type="number" min="1" max="5" value="4"></div>
+          <div><label class="field">Credibilidade</label><input id="rCred" type="number" min="1" max="5" value="4"></div>
+          <div><label class="field">Originalidade</label><input id="rOrig" type="number" min="1" max="5" value="4"></div>
+
+          <div style="grid-column:1/-1"><div class="pill">Workflow da Produção</div></div>
+          <div><label><input type="checkbox" id="wPesquisa"> Pesquisa</label></div>
+          <div><label><input type="checkbox" id="wRoteiro"> Roteiro</label></div>
+          <div><label><input type="checkbox" id="wGravacao"> Gravação</label></div>
+          <div><label><input type="checkbox" id="wDecupagem"> Decupagem</label></div>
+          <div><label><input type="checkbox" id="wEdicao"> Edição</label></div>
+          <div><label><input type="checkbox" id="wPostagem"> Postagem</label></div>
+
+          <div style="grid-column:1/-1"><div class="pill">Pesquisa (links)</div></div>
+          <div style="grid-column:1/-1">
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <input id="linkTitulo" placeholder="Título do link">
+              <input id="linkURL" placeholder="https://...">
+              <button type="button" class="tabs" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff" id="addLink">Adicionar link</button>
+            </div>
+            <ul id="linksTmp" class="small muted"></ul>
+          </div>
+
+          <div style="grid-column:1/-1"><div class="pill">Metas</div></div>
+          <div><label class="field">Meta de inscritos</label><input id="metaInscritos" type="number" placeholder="100000"></div>
+          <div><label class="field">Prazo da meta (YYYY-MM-DD)</label><input id="metaPrazo" placeholder="2026-06-01"></div>
+          <div><label class="field">Meta ritmo semanal (vídeos)</label><input id="metaRitmo" type="number" value="1"></div>
+        </form>
+
+        <div class="row">
+          <button type="button" id="saveBtn" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff">Salvar/Adicionar</button>
+          <button type="button" id="clearBtn" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff">Limpar</button>
+          <button type="button" id="exportBtn" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff">Exportar JSON</button>
+          <label for="importFile" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff;cursor:pointer">Importar JSON
+            <input id="importFile" type="file" accept=".json" style="display:none">
+          </label>
+          <button type="button" id="wipeBtn" style="padding:8px 12px;border-radius:10px;background:#151e2c;border:1px solid var(--line);color:#cfe6ff">Limpar armazenamento</button>
         </div>
-        <p class="small muted" id="stackLabel" style="margin-top:8px">—</p>
+
+        <table style="margin-top:14px">
+          <thead><tr><th>Título</th><th>Selo</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="tblBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PESQUISA -->
+    <section id="panel-pesquisa">
+      <div class="card">
+        <div class="pill">Expositor de links</div>
+        <ul id="listaPesquisa" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- ROTEIROS -->
+    <section id="panel-roteiros">
+      <div class="card">
+        <div class="pill">Roteiros anexados</div>
+        <ul id="listaRoteiros" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- FONTES -->
+    <section id="panel-fontes">
+      <div class="card">
+        <div class="pill">Repositório de fontes</div>
+        <ul id="listaFontes" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- METAS -->
+    <section id="panel-metas">
+      <div class="card">
+        <div class="pill">Metas do mês</div>
+        <div id="metasResumo" class="small muted">—</div>
       </div>
       <div class="card">
         <div class="pill">Ritmo semanal</div>
         <div id="barsMetas" class="bars"></div>
-        <p class="small muted">Publicações por semana (últimas 6 semanas)</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- HISTÓRICO -->
-  <section id="historico" class="view">
-    <div class="card">
-      <div class="pill">Histórico mensal</div>
-      <ul id="listaHistorico" class="list"></ul>
-    </div>
-  </section>
-
+    <!-- HISTÓRICO -->
+    <section id="panel-historico">
+      <div class="card">
+        <div class="pill">Histórico mensal</div>
+        <ul id="listaHistorico" class="list"></ul>
+      </div>
+    </section>
+  </div>
 </section>
 
-<script>
-/* ========= Hash routing (abas SEMPRE funcionam) ========= */
-function showViewFromHash(){
-  const hash=(location.hash||"#dashboard").replace("#","");
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  const el=document.getElementById(hash) || document.getElementById('dashboard');
-  el.classList.add('active');
-  document.querySelectorAll('a.tab[data-view]').forEach(a=>{
-    a.classList.toggle('active', a.dataset.view===hash);
-  });
-}
-window.addEventListener('hashchange', showViewFromHash);
-document.addEventListener('DOMContentLoaded', showViewFromHash);
-
-/* ========= Persistência (KV + fallback) ========= */
-const STORE="/api/store?key=";     // se não existir, usa localStorage
-const LS="candieiro_";
-async function getKV(key){
-  try{
-    const r=await fetch(STORE+encodeURIComponent(key),{cache:"no-store"});
-    if(r.ok) return await r.json(); throw 0;
-  }catch{
-    const raw=localStorage.getItem(LS+key);
-    return raw? JSON.parse(raw) : null;
-  }
-}
-async function putKV(key,val){
-  localStorage.setItem(LS+key,JSON.stringify(val));
-  try{
-    await fetch(STORE+encodeURIComponent(key),{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify(val)});
-  }catch{}
-}
-
-/* ========= Estado ========= */
+<!-- JS externo (sem inline; compatível com CSP) -->
+<script defer src="app.js"></script>
+</body>
+</html>
+// ---------- util ----------
 const tz="America/Fortaleza", locale="pt-BR";
-let productions=[]; 
-let metas={ mes:"2025-11", alvos:{narrativas:2, arquivo:2, inexplicavel:1, previas:2}, inscritos:{alvo:100000,prazo:"2026-06-01"}, ritmoSemanas:[1,0,2,1,0,1] };
-let historico=[];
-const STAGES=[
+const LS="candieiro_";
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+const fmt = (d)=> new Intl.DateTimeFormat(locale,{timeZone:tz,weekday:'short',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d).replace(',','');
+function parseISOLocal(s){const [d,t]=(s||"").split("T"); if(!d||!t) return null; const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number); return new Date(Date.UTC(Y,(M||1)-1,(D||1),(h||0)+3,(m||0)||0,0))}
+function human(ms){const s=Math.max(0,Math.floor(ms/1000));const d=Math.floor(s/86400);const h=Math.floor((s%86400)/3600);const m=Math.floor((s%3600)/60);const ss=s%60;return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`}
+
+// ---------- dados ----------
+let productions = [];
+let metas = { mes:"2025-11", alvos:{narrativas:2, arquivo:2, inexplicavel:1, previas:2}, inscritos:{alvo:100000,prazo:"2026-06-01"}, ritmoSemanas:[1,0,2,1,0,1] };
+let historico = [];
+
+const STAGES = [
   { key:"pesquisa",  label:"Pesquisa",   dias:1 },
   { key:"roteiro",   label:"Roteiro",    dias:2 },
   { key:"gravacao",  label:"Gravação",   dias:1 },
@@ -314,24 +288,24 @@ const STAGES=[
   { key:"edicao",    label:"Edição",     dias:3 },
   { key:"postagem",  label:"Postagem",   dias:0 },
 ];
+function stageLabel(p){ for(const s of STAGES){ if(!(p.stages?.[s.key]?.done)) return s.label } return "Concluído" }
 
-function parseISOLocal(s){const [d,t]=(s||"").split("T"); if(!d||!t) return null; const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number); return new Date(Date.UTC(Y,(M||1)-1,D||1,(h||0)+3,(m||0)||0,0))}
-function fmtDate(d){return new Intl.DateTimeFormat(locale,{timeZone:tz,weekday:'short',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d).replace(',', '')}
-function human(ms){const s=Math.max(0,Math.floor(ms/1000));const d=Math.floor(s/86400);const h=Math.floor((s%86400)/3600);const m=Math.floor((s%3600)/60);const ss=s%60;return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`}
-function between(a,b,now){const total=b-a; const pass=Math.max(0,now-a); return {total,pass,pct: total>0? Math.min(100,Math.max(0,(pass/total)*100)):100}}
-function stageLabel(p){ for(const s of STAGES){ if(!p.stages?.[s.key]?.done) return s.label } return "Concluído" }
-
-/* ========= Dashboard ========= */
-function timeline(){
-  const ul=document.getElementById('timeline'); ul.innerHTML='';
-  [...productions].sort((a,b)=>a.when-b.when).forEach(p=>{
-    const li=document.createElement('li');
-    li.innerHTML=`<div><strong>${p.title}</strong><div class="muted small">${fmtDate(p.when)} · ${p.selo}</div></div><div><span class="tab">${stageLabel(p)}</span></div>`;
-    ul.appendChild(li);
-  });
+// ---------- persistência ----------
+function saveAll(){
+  localStorage.setItem(LS+"productions", JSON.stringify(productions.map(p=>({...p, when:undefined}))));
+  localStorage.setItem(LS+"metas", JSON.stringify(metas));
+  localStorage.setItem(LS+"historico", JSON.stringify(historico));
 }
-function setBars(nodeId, arr){
-  const wrap=document.getElementById(nodeId); wrap.innerHTML="";
+function loadAll(){
+  const p = JSON.parse(localStorage.getItem(LS+"productions")||"[]");
+  productions = p.map(x=>({...x, when:parseISOLocal(x.data)})).filter(x=>x.when && !isNaN(x.when));
+  metas = JSON.parse(localStorage.getItem(LS+"metas")||"null") || metas;
+  historico = JSON.parse(localStorage.getItem(LS+"historico")||"[]") || [];
+}
+
+// ---------- render ----------
+function setBars(id, arr){
+  const wrap=$(id.startsWith('#')?id:'#'+id); wrap.innerHTML="";
   const max=Math.max(...arr,1);
   arr.forEach(v=>{
     const h=Math.round((v/max)*110)+10;
@@ -339,42 +313,27 @@ function setBars(nodeId, arr){
     wrap.appendChild(col);
   });
 }
-function flowStatus(){
-  const flow={pesquisa:0,roteiro:0,gravacao:0,decupagem:0,edicao:0,postagem:0};
-  productions.forEach(p=>{
-    for(const s of STAGES){
-      if(!p.stages?.[s.key]?.done){ flow[s.key]++; break; }
-    }
-  });
-  const ul=document.getElementById('flowList'); ul.innerHTML="";
-  STAGES.forEach(s=>{
-    const li=document.createElement('li');
-    li.textContent=`${s.label}: ${flow[s.key]} `; 
-    const i=document.createElement('span'); i.className="status-dot blue"; li.appendChild(i);
-    ul.appendChild(li);
-  });
-}
 function renderSteps(p){
-  const div=document.getElementById('steps'); div.innerHTML="";
+  const box=$("#steps"); box.innerHTML="";
   STAGES.forEach(s=>{
     const st=p.stages?.[s.key]||{};
     const done=!!st.done;
-    const box=document.createElement('div'); box.className="step"+(done?" done":"");
+    const div=document.createElement('div'); div.className="step";
     const title=document.createElement('div'); title.className="s-title"; title.textContent=s.label;
     const time=document.createElement('div'); time.className="s-time";
-    let spent="—", statusClass="blue";
-    if(st.start){
-      const start=new Date(st.start);
-      const end = done ? new Date(st.end) : new Date();
-      const ms=end-start;
-      const dd=s.dias*24*60*60*1000;
-      spent = human(ms);
-      if(!done && ms>dd) statusClass="bad";
-      else if(ms>dd*0.8 && !done) statusClass="warn";
-      else statusClass="ok";
-    }
-    time.innerHTML = `<span class="status-dot ${statusClass}"></span> ${spent}`;
-    box.append(title,time); div.appendChild(box);
+    let spent="—";
+    if(st.start){ const start=new Date(st.start); const end=done? new Date(st.end): new Date(); spent=human(end-start); }
+    time.textContent=spent;
+    if(done) div.style.background="linear-gradient(180deg,#13212f,#0d161f)";
+    div.append(title,time); box.appendChild(div);
+  });
+}
+function timeline(){
+  const ul=$("#timeline"); ul.innerHTML="";
+  [...productions].sort((a,b)=>a.when-b.when).forEach(p=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<div><strong>${p.title}</strong><div class="small muted">${fmt(p.when)} · ${p.selo}</div></div>`;
+    ul.appendChild(li);
   });
 }
 function counters(){
@@ -382,251 +341,155 @@ function counters(){
   const sorted=[...productions].sort((a,b)=>a.when-b.when);
   const next=sorted.find(p=>p.when>now) || sorted[sorted.length-1];
   const prevs=sorted.filter(p=>p.when<=now); const prev=prevs.length? prevs[prevs.length-1]:null;
-  document.getElementById('countdown').textContent=next? human(next.when-now):"--:--:--";
-  document.getElementById('nextLabel').textContent=next? `Próximo: ${next.title} • ${fmtDate(next.when)}`:"Sem próximos eventos";
-  const pg=document.getElementById('progress'), pgl=document.getElementById('progressLabel');
-  if(prev && next){ const m=between(prev.when,next.when,now); pg.style.width=m.pct.toFixed(1)+"%"; pgl.textContent=`Desde “${prev.title}” até “${next.title}” • ${m.pct.toFixed(1)}%`; } else { pg.style.width='0%'; pgl.textContent='Aguardando primeiro lançamento.' }
+  $("#countdown").textContent=next? human(next.when-now):"--:--:--";
+  $("#nextLabel").textContent=next? `Próximo: ${next.title} • ${fmt(next.when)}`:"Sem próximos eventos";
+  const pg=$("#progress"), pgl=$("#progressLabel");
+  if(prev && next){
+    const total=next.when-prev.when; const pass=now-prev.when; const pct=Math.min(100,Math.max(0,(pass/total)*100));
+    pg.style.width=pct.toFixed(1)+"%"; pgl.textContent=`Desde “${prev.title}” até “${next.title}” • ${pct.toFixed(1)}%`;
+  }else{ pg.style.width="0%"; pgl.textContent="Aguardando primeiro lançamento." }
 }
-
-/* ========= Metas ========= */
-function donutHTML(label, value, goal){
-  const size=160, stroke=12, radius=(size-stroke)/2, circ=2*Math.PI*radius;
-  const pct=goal? Math.max(0,Math.min(100,(value/goal)*100)): 100;
-  const dash=circ*(1-pct/100);
-  return `
-  <div class="donut">
-    <svg viewBox="0 0 ${size} ${size}">
-      <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#fff07a"/></linearGradient></defs>
-      <circle class="bg" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"/>
-      <circle class="fg" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"
-              stroke-dasharray="${circ}" stroke-dashoffset="${dash}" transform="rotate(-90 ${size/2} ${size/2})"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#e9edf3" font-size="18" font-weight="700">${Math.round(pct)}%</text>
-    </svg>
-    <div class="kpi"><div class="value">${value} / ${goal}</div><div class="label">${label}</div></div>
-  </div>`;
-}
-function renderMetasVisuais(){
-  const mes = metas.mes;
-  const publicados = historico.find(h=>h.mes===mes)?.publicados||[];
-  const cont = {narrativas:0,arquivo:0,inexplicavel:0,previas:0};
-  publicados.forEach(t=>{
-    if(/Narrativas/i.test(t)) cont.narrativas++;
-    if(/Arquivo Criminal/i.test(t)) cont.arquivo++;
-    if(/Inexplicável/i.test(t)) cont.inexplicavel++;
-    if(/Prévia/i.test(t)) cont.previas++;
-  });
-  const wrap=document.getElementById('metasVisual');
-  wrap.innerHTML = `
-    ${donutHTML("Narrativas", cont.narrativas, metas.alvos.narrativas)}
-    ${donutHTML("Arquivo Criminal", cont.arquivo, metas.alvos.arquivo)}
-    ${donutHTML("Inexplicável", cont.inexplicavel, metas.alvos.inexplicavel)}
-  `;
-  const counts={gravados:0,editando:0,publicados:0};
+function flowStatus(){
+  const flow={pesquisa:0,roteiro:0,gravacao:0,decupagem:0,edicao:0,postagem:0};
   productions.forEach(p=>{
-    const s = stageLabel(p);
-    if(s==="Pesquisa"||s==="Roteiro") counts.editando++;
-    else if(s==="Gravação"||s==="Decupagem"||s==="Edição") counts.gravados++;
-    else if(s==="Postagem"||s==="Concluído") counts.publicados++;
+    for(const s of STAGES){ if(!p.stages?.[s.key]?.done){ flow[s.key]++; break; } }
   });
-  const tot=Math.max(counts.gravados+counts.editando+counts.publicados,1);
-  document.getElementById('segG').style.width = (counts.gravados/tot*100).toFixed(1)+"%";
-  document.getElementById('segE').style.width = (counts.editando/tot*100).toFixed(1)+"%";
-  document.getElementById('segP').style.width = (counts.publicados/tot*100).toFixed(1)+"%";
-  document.getElementById('stackLabel').textContent=`Gravados: ${counts.gravados} · Editando: ${counts.editando} · Publicados: ${counts.publicados}`;
+  const ul=$("#flowList"); ul.innerHTML="";
+  STAGES.forEach(s=>{
+    const li=document.createElement('li'); li.textContent=`${s.label}: ${flow[s.key]}`; ul.appendChild(li);
+  });
 }
-
-/* ========= Roteiros & Fontes ========= */
-function b64(file){return new Promise((res,rej)=>{const r=new FileReader(); r.onload=()=>res((r.result||"").split(",")[1]||""); r.onerror=rej; r.readAsDataURL(file)})}
-function b64toBlob(b64,mime){const bin=atob(b64); const len=bin.length; const bytes=new Uint8Array(len); for(let i=0;i<len;i++) bytes[i]=bin.charCodeAt(i); return new Blob([bytes],{type:mime}) }
-
 function renderRoteiros(){
-  const ul=document.getElementById('listaRoteiros'); ul.innerHTML="";
-  productions.forEach((p,idx)=>{
+  const ul=$("#listaRoteiros"); ul.innerHTML="";
+  productions.forEach((p,i)=>{
     if(p.roteiro && (p.roteiro.pdfName || p.roteiro.pdfData)){
       const li=document.createElement('li');
-      li.innerHTML=`<div><strong>${p.title}</strong> · ${p.selo}
-      <div class="small muted">Força:${p.roteiro.av.forca}/5 · Emocional:${p.roteiro.av.emocional}/5 · Drama/Sensib:${p.roteiro.av.drama}/5 · Cred:${p.roteiro.av.cred}/5 · Orig:${p.roteiro.av.orig}/5</div></div>
-      <div><button class="tab" data-open="${idx}" type="button">Abrir PDF</button></div>`;
+      li.innerHTML=`<div><strong>${p.title}</strong> · ${p.selo}</div>`;
       ul.appendChild(li);
     }
   });
-  ul.onclick=(e)=>{
-    const b=e.target.closest('button[data-open]'); if(!b) return;
-    const p=productions[+b.dataset.open];
-    if(p.roteiro?.pdfData){
-      const blob=b64toBlob(p.roteiro.pdfData,"application/pdf");
-      const url=URL.createObjectURL(blob); window.open(url,"_blank");
-    }
-  };
 }
-function renderFontesPesquisa(){
-  const fontes=[];
-  productions.forEach(p=> (p.links||[]).forEach(l=>fontes.push({...l, tema:p.title})));
-  const lf=document.getElementById('listaFontes'); lf.innerHTML="";
-  const lp=document.getElementById('listaPesquisa'); lp.innerHTML="";
-  fontes.forEach(f=>{
+function renderFontes(){
+  const list=[]; productions.forEach(p=> (p.links||[]).forEach(l=>list.push({...l,tema:p.title})));
+  const lf=$("#listaFontes"), lp=$("#listaPesquisa"); lf.innerHTML=""; lp.innerHTML="";
+  list.forEach(f=>{
     const html=`<div><strong>${f.titulo||"Fonte"}</strong> · <span class="muted">${f.tema}</span></div>
-                <div><a class="tab" href="${f.url}" target="_blank" rel="noopener">Abrir</a></div>`;
+                <div><a href="${f.url}" target="_blank" rel="noopener">Abrir</a></div>`;
     const li1=document.createElement('li'); li1.innerHTML=html; lf.appendChild(li1);
     const li2=document.createElement('li'); li2.innerHTML=html; lp.appendChild(li2);
   });
 }
-
-/* ========= Editor ========= */
-let tempLinks=[];
-function renderTempLinks(){
-  const ul=document.getElementById('linksTmp'); ul.innerHTML="";
-  tempLinks.forEach(l=>{
-    const li=document.createElement('li'); li.innerHTML=`${l.titulo||"link"} · <a href="${l.url}" target="_blank">${l.url}</a>`;
-    ul.appendChild(li);
-  });
+function renderMetas(){
+  $("#metasResumo").textContent = `Alvos — Narrativas: ${metas.alvos.narrativas} · Arquivo: ${metas.alvos.arquivo} · Inexplicável: ${metas.alvos.inexplicavel} · Prévias: ${metas.alvos.previas}`;
+  setBars("barsMetas", metas.ritmoSemanas||[0,0,0,0,0,0]);
 }
-document.getElementById('addLink').onclick=()=>{
-  const t=document.getElementById('linkTitulo').value.trim();
-  const u=document.getElementById('linkURL').value.trim();
-  if(!u) return;
-  tempLinks.push({titulo:t,url:u}); renderTempLinks();
-  document.getElementById('linkTitulo').value=""; document.getElementById('linkURL').value="";
-};
-function stageObj(id){ const checked=document.getElementById(id).checked; return { done:checked, start:new Date().toISOString(), end: checked? new Date().toISOString():null }; }
-function resetForm(){ document.getElementById('form').reset(); tempLinks=[]; renderTempLinks(); }
-
-document.getElementById('saveBtn').onclick=async ()=>{
-  const t=document.getElementById('fTitulo').value.trim();
-  const s=document.getElementById('fSelo').value.trim();
-  const d=document.getElementById('fData').value.trim();
-  if(!t||!s||!d){ alert("Preencha título, selo e data"); return; }
-  const p={
-    title:t, selo:s, data:d, when:parseISOLocal(d),
-    link: document.getElementById('fLink').value.trim() || "",
-    stages: {
-      pesquisa:  stageObj('wPesquisa'),
-      roteiro:   stageObj('wRoteiro'),
-      gravacao:  stageObj('wGravacao'),
-      decupagem: stageObj('wDecupagem'),
-      edicao:    stageObj('wEdicao'),
-      postagem:  stageObj('wPostagem'),
-    },
-    roteiro:{
-      notas: document.getElementById('fNotas').value.trim(),
-      av:{
-        forca:+document.getElementById('rForca').value||0,
-        emocional:+document.getElementById('rEmocional').value||0,
-        drama:+document.getElementById('rDrama').value||0,
-        cred:+document.getElementById('rCred').value||0,
-        orig:+document.getElementById('rOrig').value||0,
-      }
-    },
-    links:[...tempLinks]
-  };
-  const file=document.getElementById('fPDF').files[0];
-  if(file){ p.roteiro.pdfName=file.name; p.roteiro.pdfData=await b64(file); }
-  productions.push(p);
-  await saveAll(); resetForm(); renderAll(); renderTable();
-};
-document.getElementById('clearBtn').onclick=resetForm;
-
-document.getElementById('exportBtn').onclick=()=>{
-  const blob=new Blob([JSON.stringify({productions,metas,historico},null,2)],{type:"application/json"});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-export.json"; a.click();
-};
-document.getElementById('importFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=async ()=>{ const j=JSON.parse(r.result||"{}"); productions=(j.productions||[]).map(p=>({...p, when:parseISOLocal(p.data)})); metas=j.metas||metas; historico=j.historico||[]; await saveAll(); renderAll(); renderTable(); };
-  r.readAsText(f);
-};
-document.getElementById('syncLoad').onclick=async ()=>{ await loadAll(); renderAll(); renderTable(); };
-document.getElementById('syncSave').onclick=async ()=>{ await saveAll(); alert("Dados salvos."); };
-
-document.getElementById('tblBody').onclick=async (e)=>{
-  const b=e.target.closest('button[data-i]'); if(!b) return;
-  const i=+b.dataset.i; const act=b.dataset.act;
-  if(act==="del"){ if(confirm("Excluir produção?")){ productions.splice(i,1); await saveAll(); renderAll(); renderTable(); } }
-  if(act==="toggle"){ const p=productions[i];
-    for(const s of STAGES){ if(!p.stages?.[s.key]?.done){ p.stages[s.key]={done:true,start:p.stages[s.key]?.start||new Date().toISOString(),end:new Date().toISOString()}; break; }
-    await saveAll(); renderAll(); renderTable();
-  }
-};
 function renderTable(){
-  const tb=document.getElementById('tblBody'); tb.innerHTML="";
+  const tb=$("#tblBody"); tb.innerHTML="";
   productions.sort((a,b)=>a.when-b.when).forEach((p,i)=>{
-    const status=stageLabel(p);
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td>${p.title}</td>
       <td>${p.selo}</td>
-      <td>${fmtDate(p.when)}</td>
-      <td>${status}</td>
+      <td>${fmt(p.when)}</td>
+      <td>${stageLabel(p)}</td>
       <td>
-        <button class="tab" data-i="${i}" data-act="toggle" type="button">✓ Etapa concluída</button>
-        <button class="tab" data-i="${i}" data-act="del" type="button">Excluir</button>
+        <button data-i="${i}" data-act="toggle">✓ Etapa concluída</button>
+        <button data-i="${i}" data-act="del">Excluir</button>
       </td>`;
     tb.appendChild(tr);
   });
 }
-
-/* ========= Render geral ========= */
-function renderAll(){
-  const sel=document.getElementById('selProd'); sel.innerHTML="";
+function renderSelect(){
+  const sel=$("#selProd"); sel.innerHTML="";
   productions.sort((a,b)=>a.when-b.when).forEach((p,i)=>{
-    const o=document.createElement('option'); o.value=i; o.textContent=`${fmtDate(p.when)} — ${p.title}`; sel.appendChild(o);
+    const o=document.createElement('option'); o.value=i; o.textContent=`${fmt(p.when)} — ${p.title}`; sel.appendChild(o);
   });
-  sel.onchange=()=>{ const p=productions[+sel.value]; if(p) renderSteps(p); };
+  sel.onchange=()=>{ const p=productions[+sel.value]; p && renderSteps(p); };
   if(productions.length){ sel.value=0; renderSteps(productions[0]); }
-  timeline(); counters(); flowStatus();
-  setBars("bars", metas.ritmoSemanas||[0,0,0,0,0,0]);
-  setBars("barsMetas", metas.ritmoSemanas||[0,0,0,0,0,0]);
-  renderMetasVisuais();
-  renderRoteiros();
-  renderFontesPesquisa();
-
-  // Histórico
-  const ul=document.getElementById('listaHistorico'); ul.innerHTML="";
-  historico.forEach(h=>{
-    const li=document.createElement('li');
-    li.innerHTML=`<div><strong>${h.mes}</strong></div><div class="small muted">${(h.publicados||[]).join(" · ")||"—"}</div>`;
-    ul.appendChild(li);
-  });
+}
+function renderAll(){
+  renderSelect(); timeline(); counters(); flowStatus(); setBars("bars",[1,0,2,1,0,1]);
+  renderRoteiros(); renderFontes(); renderMetas();
 }
 
-/* ========= Load/Save ========= */
-async function loadAll(){
-  const p = await getKV("productions");
-  productions = (p||[]).map(x=>({...x, when:parseISOLocal(x.data)})).filter(x=>x.when && !isNaN(x.when));
-  metas = await getKV("metas") || metas;
-  historico = await getKV("historico") || historico;
+// ---------- editor ----------
+let tempLinks=[];
+function renderTempLinks(){
+  const ul=$("#linksTmp"); ul.innerHTML="";
+  tempLinks.forEach(l=>{ const li=document.createElement('li'); li.innerHTML=`${l.titulo||"link"} · <a href="${l.url}" target="_blank">${l.url}</a>`; ul.appendChild(li); });
 }
-async function saveAll(){
-  await putKV("productions",productions.map(p=>({...p, when:undefined})));
-  await putKV("metas",metas);
-  await putKV("historico",historico);
+$("#addLink").onclick=()=>{
+  const t=$("#linkTitulo").value.trim(), u=$("#linkURL").value.trim();
+  if(!u) return; tempLinks.push({titulo:t,url:u}); renderTempLinks(); $("#linkTitulo").value=""; $("#linkURL").value="";
+};
+function stageObj(id){ const chk=$("#"+id).checked; return {done:chk,start:new Date().toISOString(),end: chk?new Date().toISOString():null}; }
+function resetForm(){ $("#form").reset(); tempLinks=[]; renderTempLinks(); }
+
+$("#saveBtn").onclick=()=>{
+  const t=$("#fTitulo").value.trim(), s=$("#fSelo").value.trim(), d=$("#fData").value.trim();
+  if(!t||!s||!d){ alert("Preencha título, selo e data"); return; }
+  const p={
+    title:t, selo:s, data:d, when:parseISOLocal(d),
+    link: $("#fLink").value.trim()||"",
+    stages:{
+      pesquisa:stageObj('wPesquisa'), roteiro:stageObj('wRoteiro'),
+      gravacao:stageObj('wGravacao'), decupagem:stageObj('wDecupagem'),
+      edicao:stageObj('wEdicao'), postagem:stageObj('wPostagem'),
+    },
+    roteiro:{ notas:$("#fNotas").value.trim(),
+      av:{forca:+$("#rForca").value||0, emocional:+$("#rEmocional").value||0, drama:+$("#rDrama").value||0, cred:+$("#rCred").value||0, orig:+$("#rOrig").value||0}
+    },
+    links:[...tempLinks]
+  };
+  const file=$("#fPDF").files[0];
+  if(file){
+    const fr=new FileReader();
+    fr.onload=()=>{ p.roteiro.pdfName=file.name; p.roteiro.pdfData=(fr.result||"").split(",")[1]||""; finish(); };
+    fr.readAsDataURL(file);
+  }else finish();
+
+  function finish(){ productions.push(p); saveAll(); resetForm(); renderAll(); renderTable(); }
+};
+$("#clearBtn").onclick=resetForm;
+$("#exportBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify({productions,metas,historico},null,2)],{type:"application/json"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-export.json"; a.click();
+};
+$("#importFile").onchange = (e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ const j=JSON.parse(r.result||"{}"); productions=(j.productions||[]).map(p=>({...p,when:parseISOLocal(p.data)})); metas=j.metas||metas; historico=j.historico||[]; saveAll(); renderAll(); renderTable(); };
+  r.readAsText(f);
+};
+$("#wipeBtn").onclick=()=>{ if(confirm("Apagar armazenamento local?")){ localStorage.removeItem(LS+"productions"); localStorage.removeItem(LS+"metas"); localStorage.removeItem(LS+"historico"); productions=[]; loadDefaults(); renderAll(); renderTable(); } };
+
+$("#tblBody").onclick=(e)=>{
+  const b=e.target.closest('button[data-i]'); if(!b) return;
+  const i=+b.dataset.i, act=b.dataset.act;
+  if(act==="del"){ if(confirm("Excluir produção?")){ productions.splice(i,1); saveAll(); renderAll(); renderTable(); } }
+  if(act==="toggle"){ const p=productions[i]; for(const s of STAGES){ if(!p.stages?.[s.key]?.done){ p.stages[s.key]={done:true,start:p.stages[s.key]?.start||new Date().toISOString(),end:new Date().toISOString()}; break;} } saveAll(); renderAll(); renderTable(); }
+};
+
+// ---------- defaults (Out/Nov) ----------
+function loadDefaults(){
+  if(productions.length) return;
+  productions = [
+    {title:"Arquivo Criminal: Ed Gein",     selo:"Arquivo Criminal", data:"2025-10-01T18:00"},
+    {title:"Narrativas: Caso Genivaldo",    selo:"Narrativas",        data:"2025-10-17T18:00"},
+    {title:"Narrativas: Aberfan",           selo:"Narrativas",        data:"2025-10-31T18:00"},
+    {title:"Inexplicável: Quarto 1046",     selo:"Inexplicável",      data:"2025-11-10T18:00"},
+    {title:"Narrativas: Chico Mendes",      selo:"Narrativas",        data:"2025-11-14T18:00"},
+    {title:"Arquivo Criminal: Amelia Dyer", selo:"Arquivo Criminal",  data:"2025-11-21T18:00"}
+  ].map(x=>({...x, when:parseISOLocal(x.data), stages:{}}));
+  historico = [
+    { mes:"2025-10", publicados:["Arquivo Criminal: Ed Gein","Narrativas: Caso Genivaldo","Narrativas: Aberfan"] },
+    { mes:"2025-11", publicados:[] }
+  ];
+  metas = { mes:"2025-11", alvos:{narrativas:2, arquivo:2, inexplicavel:1, previas:2}, inscritos:{alvo:100000,prazo:"2026-06-01"}, ritmoSemanas:[1,0,2,1,0,1] };
+  saveAll();
 }
 
-/* ========= Boot (dados Outubro/Novembro já carregados) ========= */
-async function boot(){
-  await loadAll();
-  if(!productions.length){
-    productions = [
-      {title:"Arquivo Criminal: Ed Gein",     selo:"Arquivo Criminal", data:"2025-10-01T18:00"},
-      {title:"Narrativas: Caso Genivaldo",    selo:"Narrativas",        data:"2025-10-17T18:00"},
-      {title:"Narrativas: Aberfan",           selo:"Narrativas",        data:"2025-10-31T18:00"},
-      {title:"Inexplicável: Quarto 1046",     selo:"Inexplicável",      data:"2025-11-10T18:00"},
-      {title:"Narrativas: Chico Mendes",      selo:"Narrativas",        data:"2025-11-14T18:00"},
-      {title:"Arquivo Criminal: Amelia Dyer", selo:"Arquivo Criminal",  data:"2025-11-21T18:00"}
-    ].map(x=>({ ...x, when:parseISOLocal(x.data), stages:{} }));
-
-    historico = [
-      { mes:"2025-10", publicados:["Arquivo Criminal: Ed Gein","Narrativas: Caso Genivaldo","Narrativas: Aberfan"] },
-      { mes:"2025-11", publicados:[] }
-    ];
-
-    metas = { mes:"2025-11", alvos:{narrativas:2, arquivo:2, inexplicavel:1, previas:2}, inscritos:{alvo:100000,prazo:"2026-06-01"}, ritmoSemanas:[1,0,2,1,0,1] };
-    await saveAll();
-  }
-  renderAll(); renderTable();
+// ---------- boot ----------
+function boot(){
+  loadAll(); loadDefaults(); renderAll(); renderTable(); setInterval(counters,1000);
 }
 document.addEventListener('DOMContentLoaded', boot);
-setInterval(()=>{ counters(); },1000);
-</script>
-</body>
-</html>
