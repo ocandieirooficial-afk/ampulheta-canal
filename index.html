@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Estúdios Candieiro — Painel de Produção</title>
+<title>EstÃºdios Candieiro â€” Painel de ProduÃ§Ã£o</title>
 <meta name="color-scheme" content="dark light">
 <style>
   :root{
@@ -55,8 +55,8 @@
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
         <div>
-          <h1>Estúdios Candieiro</h1>
-          <div class="sub">Painel de Produção — Linha do tempo das publicações (fuso: America/Fortaleza)</div>
+          <h1>EstÃºdios Candieiro</h1>
+          <div class="sub">Painel de ProduÃ§Ã£o â€” Linha do tempo das publicaÃ§Ãµes (fuso: America/Fortaleza)</div>
         </div>
       </div>
       <button id="toggleMode" class="btn">Alternar tema</button>
@@ -64,14 +64,14 @@
 
     <div class="row">
       <div class="card">
-        <div class="pill">Próximo vídeo em</div>
+        <div class="pill">PrÃ³ximo vÃ­deo em</div>
         <div id="countdown" class="big" style="margin:8px 0 6px">--:--:--</div>
-        <div class="muted small" id="nextLabel">Carregando…</div>
+        <div class="muted small" id="nextLabel">Carregandoâ€¦</div>
       </div>
       <div class="card">
-        <div class="pill">Progresso entre lançamentos</div>
+        <div class="pill">Progresso entre lanÃ§amentos</div>
         <div class="bar" style="margin:10px 0 8px"><span id="progress"></span></div>
-        <div class="muted small" id="progressLabel">—</div>
+        <div class="muted small" id="progressLabel">â€”</div>
       </div>
     </div>
 
@@ -82,7 +82,7 @@
       </div>
 
       <div class="card">
-        <div class="pill">Painel de edição (local)</div>
+        <div class="pill">Painel de ediÃ§Ã£o (local)</div>
         <div style="margin:10px 0 12px" class="controls">
           <button id="addSample" class="btn">Carregar exemplo (Out/Nov)</button>
           <button id="exportBtn" class="btn">Exportar JSON</button>
@@ -90,7 +90,7 @@
         </div>
         <form id="form" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px">
           <div>
-            <label>Título</label>
+            <label>TÃ­tulo</label>
             <input id="fTitulo" placeholder="Narrativas: Chico Mendes">
           </div>
           <div>
@@ -98,8 +98,8 @@
             <select id="fSelo">
               <option>Narrativas</option>
               <option>Arquivo Criminal</option>
-              <option>Inexplicável</option>
-              <option>Prévia</option>
+              <option>InexplicÃ¡vel</option>
+              <option>PrÃ©via</option>
               <option>Abertos</option>
             </select>
           </div>
@@ -113,14 +113,14 @@
           </div>
         </form>
         <table id="tbl">
-          <thead><tr><th>Título</th><th>Selo</th><th>Data (Fortaleza)</th><th>Ações</th></tr></thead>
+          <thead><tr><th>TÃ­tulo</th><th>Selo</th><th>Data (Fortaleza)</th><th>AÃ§Ãµes</th></tr></thead>
           <tbody></tbody>
         </table>
-        <p class="footer">As alterações ficam salvas no seu navegador (localStorage). Para usar em outra máquina, exporte o JSON e importe lá.</p>
+        <p class="footer">As alteraÃ§Ãµes ficam salvas no seu navegador (localStorage). Para usar em outra mÃ¡quina, exporte o JSON e importe lÃ¡.</p>
       </div>
     </div>
 
-    <p class="footer">© Estúdios Candieiro — Painel interno de produção.</p>
+    <p class="footer">Â© EstÃºdios Candieiro â€” Painel interno de produÃ§Ã£o.</p>
   </div>
 
 <script>
@@ -186,10 +186,10 @@ function renderTimeline(now){
   [...events].sort((a,b)=>a.when-b.when).forEach(e=>{
     const li=document.createElement('li');
     const left=document.createElement('div');
-    left.innerHTML=`<strong>${e.titulo}</strong><div class="when">${fmtDate(e.when)} · ${e.selo}</div>`;
+    left.innerHTML=`<strong>${e.titulo}</strong><div class="when">${fmtDate(e.when)} Â· ${e.selo}</div>`;
     const right=document.createElement('div');
     const tag=document.createElement('span'); tag.className='tag';
-    const delta=e.when-now; tag.textContent = delta>0 ? `em ${humanDiff(delta)}` : `há ${humanDiff(-delta)}`;
+    const delta=e.when-now; tag.textContent = delta>0 ? `em ${humanDiff(delta)}` : `hÃ¡ ${humanDiff(-delta)}`;
     right.appendChild(tag); li.append(left,right); ul.appendChild(li);
   });
 }
@@ -203,16 +203,16 @@ function renderCounters(){
   const cd=document.getElementById('countdown');
   const lbl=document.getElementById('nextLabel');
   cd.textContent = next ? humanDiff(next.when - now) : "--:--:--";
-  lbl.textContent = next ? `Próximo: ${next.titulo} • ${fmtDate(next.when)}` : "Sem próximos eventos";
+  lbl.textContent = next ? `PrÃ³ximo: ${next.titulo} â€¢ ${fmtDate(next.when)}` : "Sem prÃ³ximos eventos";
 
   const pg=document.getElementById('progress');
   const pgl=document.getElementById('progressLabel');
   if(prev && next){
     const met=between(prev.when,next.when,now);
     pg.style.width=met.pct.toFixed(1)+'%';
-    pgl.textContent=`Desde “${prev.titulo}” até “${next.titulo}” • ${met.pct.toFixed(1)}% concluído`;
+    pgl.textContent=`Desde â€œ${prev.titulo}â€ atÃ© â€œ${next.titulo}â€ â€¢ ${met.pct.toFixed(1)}% concluÃ­do`;
   }else{
-    pg.style.width='0%'; pgl.textContent='Aguardando primeiro lançamento.';
+    pg.style.width='0%'; pgl.textContent='Aguardando primeiro lanÃ§amento.';
   }
   renderTimeline(now);
 }
@@ -233,7 +233,7 @@ function loadSample(){
     { titulo:"Arquivo Criminal: Ed Gein", selo:"Arquivo Criminal", data:"2025-10-01T18:00" },
     { titulo:"Narrativas: Caso Genivaldo", selo:"Narrativas", data:"2025-10-17T18:00" },
     { titulo:"Narrativas: Aberfan", selo:"Narrativas", data:"2025-10-31T18:00" },
-    { titulo:"Inexplicável: Quarto 1046 (estreia)", selo:"Inexplicável", data:"2025-11-10T18:00" },
+    { titulo:"InexplicÃ¡vel: Quarto 1046 (estreia)", selo:"InexplicÃ¡vel", data:"2025-11-10T18:00" },
     { titulo:"Narrativas: Chico Mendes", selo:"Narrativas", data:"2025-11-14T18:00" },
     { titulo:"Arquivo Criminal: Amelia Dyer", selo:"Arquivo Criminal", data:"2025-11-19T18:00" },
     { titulo:"Narrativas: Anneliese Michel", selo:"Narrativas", data:"2025-11-28T18:00" }
@@ -260,7 +260,7 @@ document.getElementById('saveBtn').onclick=()=>{
   const s=document.getElementById('fSelo').value.trim();
   const d=document.getElementById('fData').value.trim();
   const when=parseISOLocal(d);
-  if(!t||!s||!when||isNaN(when)){ alert("Preencha título, selo e data no formato YYYY-MM-DDTHH:MM"); return; }
+  if(!t||!s||!when||isNaN(when)){ alert("Preencha tÃ­tulo, selo e data no formato YYYY-MM-DDTHH:MM"); return; }
   events.push({titulo:t,selo:s,data:d,when}); save(); rerender();
   document.getElementById('form').reset();
 };
