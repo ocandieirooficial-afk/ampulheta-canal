@@ -5,27 +5,29 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Estúdios Candieiro — Painel de Produção</title>
 <meta name="color-scheme" content="dark light">
+<link rel="icon" href="/assets/logo.png">
 <style>
   :root{
     --bg:#0b0e13; --panel:#121720; --ink:#e9edf3; --muted:#9fb0c8;
-    --accent:#ffd33d; --accent2:#fff07a; --line:#1f2a3d;
-    --ok:#39d98a; --warn:#ffd166;
+    --accent:#ffcc00; --accent2:#fff07a; --line:#1f2a3d; --ok:#39d98a; --warn:#ffd166; --bad:#ff6b6b;
   }
   *{box-sizing:border-box}
-  body{margin:0; font-family:system-ui,-apple-system,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink)}
+  body{margin:0; font-family:system-ui,-apple-system,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:radial-gradient(1200px 800px at 75% 0%, rgba(218,45,64,.06), rgba(0,0,0,0)), linear-gradient(160deg,#0b0e13 0%, #151820 55%, #1a202b 100%); color:var(--ink)}
   .wrap{max-width:980px; margin:28px auto 48px; padding:0 16px}
   header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px}
   .brand{display:flex; align-items:center; gap:12px}
-  .logo{width:36px; height:36px; border-radius:8px; background:radial-gradient(60% 60% at 30% 30%,#ffd166 0%,#ffb000 55%,#6b3800 100%); box-shadow:0 0 30px rgba(255,160,0,.25)}
+  .logo-img{width:36px; height:36px; border-radius:8px; object-fit:cover}
   h1{font-size:22px; margin:0}
   .sub{color:var(--muted); font-size:13px}
+  .right{display:flex; align-items:center; gap:10px}
+  .avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
   nav{display:flex; gap:8px; flex-wrap:wrap}
   .tab{background:#151e2c; border:1px solid var(--line); color:#cfe6ff; padding:8px 12px; border-radius:10px; cursor:pointer}
   .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border-color:#d4b100}
   .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .row{display:flex; gap:16px; flex-wrap:wrap}
   .row .card{flex:1 1 280px}
-  .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1420; border:1px solid var(--line); color:var(--muted); font-size:12px}
+  .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1420; border:1px solid var(--line); color:#9fb0c8; font-size:12px}
   .big{font-size:34px; font-weight:800; letter-spacing:.2px}
   .bar{height:12px; background:#0e1420; border:1px solid var(--line); border-radius:999px; overflow:hidden}
   .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .6s ease}
@@ -34,10 +36,9 @@
   ul.list{list-style:none; padding:0; margin:0}
   .list li{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px dashed #223046}
   .list li:last-child{border-bottom:none}
-  .when{color:var(--muted); font-size:14px}
-  .tag{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid #23314a; background:#0a111d; color:#b7c7de}
-  .muted{color:var(--muted)} .small{font-size:12px}
-  .footer{margin-top:16px; font-size:12px; color:#8aa0bf}
+  .when{color:#9fb0c8; font-size:14px}
+  .tag{font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid #23314a; background:#0a111d; color:#cfd6e6}
+  .muted{color:#9fb0c8} .small{font-size:12px}
   button,.btn{background:#152238; color:#cfe6ff; border:1px solid #254064; padding:10px 14px; border-radius:10px; cursor:pointer}
   button:hover,.btn:hover{filter:brightness(1.08)}
   input,select{width:100%; background:#0e1420; color:#cfe6ff; border:1px solid var(--line); border-radius:10px; padding:10px}
@@ -47,28 +48,61 @@
   table{width:100%; border-collapse:collapse; font-size:14px}
   th,td{padding:10px; border-bottom:1px dashed #223046; text-align:left}
   th{color:#a9bdd7; font-weight:600}
-  .right{display:flex; gap:8px; align-items:center}
-  .danger{background:#3a1520; border-color:#5a1d2f; color:#ffd3d9}
-  .ok{color:var(--ok)} .warn{color:var(--warn)}
-  /* esconder/mostrar áreas */
   .view{display:none} .view.active{display:block}
+  .footer{margin-top:16px; font-size:12px; color:#8aa0bf}
+
+  /* ---- Metas Visuais ---- */
+  .meta-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  @media (max-width:860px){ .meta-grid{grid-template-columns:1fr} }
+  .donut{
+    --size:160; --stroke:12; --circ: calc(3.14159 * (var(--size) - var(--stroke)));
+    display:flex; align-items:center; gap:12px;
+  }
+  .donut svg{width:var(--size)px; height:var(--size)px}
+  .donut .kpi{display:flex; flex-direction:column; gap:2px}
+  .kpi .value{font-size:28px; font-weight:800}
+  .kpi .label{font-size:13px; color:#9fb0c8}
+  .donut .bg{stroke:#1f2938; opacity:.9}
+  .donut .fg{stroke:url(#g1); transition:stroke-dashoffset .7s ease}
+  .legend{display:flex; align-items:center; gap:8px; font-size:12px; color:#9fb0c8}
+  .legend i{display:inline-block; width:12px; height:12px; border-radius:3px}
+
+  .stack{height:18px; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:#0e1420; display:flex}
+  .stack .seg{height:100%}
+  .seg.g{background:linear-gradient(90deg, #2fe3a1, #8ef4cd)}
+  .seg.e{background:linear-gradient(90deg, #ffd166, #ffe9a6)}
+  .seg.p{background:linear-gradient(90deg, #6dc1ff, #a9d8ff)}
+
+  .bars{display:flex; gap:8px; align-items:flex-end; height:120px; margin-top:8px}
+  .bars .col{flex:1; background:linear-gradient(180deg, #ffcc00, #ffd84d); border:1px solid #d7b000; border-radius:6px 6px 0 0; min-width:28px; display:flex; align-items:flex-end; justify-content:center; color:#1d1700; font-weight:700}
+  .bars .col small{display:block; padding:6px 2px}
+  .bars .col.muted{background:linear-gradient(180deg, #243146, #1a232f); border-color:#1f2a3d; color:#a9bdd7}
 </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
+        <img class="logo-img" src="/assets/logo.png" alt="Estúdios Candieiro">
         <div>
           <h1>Estúdios Candieiro</h1>
-          <div class="sub">Painel de Produção — Linha do tempo das publicações (fuso: America/Fortaleza)</div>
+          <div class="sub">Painel de Produção — America/Fortaleza</div>
         </div>
       </div>
-      <nav>
-        <button class="tab active" data-view="dashboard">Dashboard</button>
-        <button class="tab" data-view="editor">Editor</button>
-      </nav>
+      <div class="right">
+        <img class="avatar" src="/assets/paulo.jpg" alt="Paulo Henrique Leitão">
+      </div>
     </header>
+
+    <nav>
+      <button class="tab active" data-view="dashboard">Dashboard</button>
+      <button class="tab" data-view="editor">Editor</button>
+      <button class="tab" data-view="pesquisa">Pesquisa</button>
+      <button class="tab" data-view="roteiros">Roteiros</button>
+      <button class="tab" data-view="fontes">Fontes</button>
+      <button class="tab" data-view="metas">Metas</button>
+      <button class="tab" data-view="historico">Histórico</button>
+    </nav>
 
     <!-- DASHBOARD -->
     <section id="dashboard" class="view active">
@@ -85,6 +119,12 @@
         </div>
       </div>
 
+      <!-- Metas Visuais (resumo) -->
+      <div class="card">
+        <div class="pill">Metas do mês — Visão rápida</div>
+        <div id="metasResumo" class="meta-grid" style="margin-top:12px"></div>
+      </div>
+
       <div class="grid2">
         <div class="card">
           <div class="pill">Linha do tempo</div>
@@ -93,8 +133,8 @@
         <div class="card">
           <div class="pill">Dicas rápidas</div>
           <p class="small muted" style="margin-top:10px">
-            • Verde = ritmo bom. • Se a barra travar abaixo de 50% perto do prazo, mova tarefas do “Editor” para o decupador.<br/>
-            • Cronograma fixo: Seg(🌀), Ter(Prévia), Qua(Arquivo Criminal), Qui(Abertos), Sex(Narrativas). Lançamento às 18h.
+            • Verde = ritmo bom. • Se a barra travar &lt; 50% perto do prazo, mova tarefas do “Editor” para o decupador.<br/>
+            • Cronograma fixo: Seg(🌀), Ter(Prévia), Qua(Arquivo Criminal), Qui(Abertos), Sex(Narrativas) — 18h.
           </p>
         </div>
       </div>
@@ -104,32 +144,21 @@
     <!-- EDITOR -->
     <section id="editor" class="view">
       <div class="card">
-        <div class="pill">Gerenciar lançamentos (salvo no navegador)</div>
+        <div class="pill">Gerenciar lançamentos (autosave em Cloudflare KV)</div>
         <div style="margin:10px 0 12px" class="controls">
           <button id="addSample" class="btn">Carregar exemplo (Out/Nov)</button>
           <button id="exportBtn" class="btn">Exportar JSON</button>
           <label for="importFile" class="btn">Importar JSON<input id="importFile" type="file" accept=".json" style="display:none"></label>
+          <button id="syncLoad" class="btn">Recarregar do servidor</button>
+          <button id="syncSave" class="btn">Forçar salvar no servidor</button>
         </div>
 
         <form id="form" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px">
-          <div>
-            <label>Título</label>
-            <input id="fTitulo" placeholder="Narrativas: Chico Mendes">
+          <div><label>Título</label><input id="fTitulo" placeholder="Narrativas: Chico Mendes"></div>
+          <div><label>Selo</label>
+            <select id="fSelo"><option>Narrativas</option><option>Arquivo Criminal</option><option>Inexplicável</option><option>Prévia</option><option>Abertos</option></select>
           </div>
-          <div>
-            <label>Selo</label>
-            <select id="fSelo">
-              <option>Narrativas</option>
-              <option>Arquivo Criminal</option>
-              <option>Inexplicável</option>
-              <option>Prévia</option>
-              <option>Abertos</option>
-            </select>
-          </div>
-          <div>
-            <label>Data & hora (YYYY-MM-DDTHH:MM)</label>
-            <input id="fData" placeholder="2025-11-14T18:00">
-          </div>
+          <div><label>Data & hora (YYYY-MM-DDTHH:MM)</label><input id="fData" placeholder="2025-11-14T18:00"></div>
           <div class="right">
             <button type="button" id="saveBtn" class="btn">Salvar/Adicionar</button>
             <button type="button" id="clearBtn" class="btn danger">Limpar tudo</button>
@@ -140,21 +169,87 @@
           <thead><tr><th>Título</th><th>Selo</th><th>Data (Fortaleza)</th><th>Ações</th></tr></thead>
           <tbody id="tblBody"></tbody>
         </table>
-        <p class="footer">Dica: use “Exportar JSON” para levar a agenda para outro computador (e “Importar JSON” lá).</p>
       </div>
     </section>
+
+    <!-- PESQUISA -->
+    <section id="pesquisa" class="view"><div class="card"><div class="pill">Pesquisa</div>
+      <input id="qPesquisa" placeholder="Buscar por tema/roteiro..." style="margin:10px 0">
+      <ul class="list" id="listaPesquisa"></ul>
+    </div></section>
+
+    <!-- ROTEIROS -->
+    <section id="roteiros" class="view"><div class="card"><div class="pill">Roteiros</div>
+      <ul class="list" id="listaRoteiros"></ul>
+    </div></section>
+
+    <!-- FONTES -->
+    <section id="fontes" class="view"><div class="card"><div class="pill">Fontes & Referências</div>
+      <ul class="list" id="listaFontes"></ul>
+    </div></section>
+
+    <!-- METAS (detalhes visuais) -->
+    <section id="metas" class="view">
+      <div class="card">
+        <div class="pill">Metas do mês (visuais)</div>
+        <div id="metasVisual" class="meta-grid" style="margin-top:12px"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="pill">Produção (Gravados / Editando / Publicados)</div>
+          <div id="stackWrap" style="margin-top:8px">
+            <div class="stack">
+              <div class="seg g" id="segG" style="width:0%"></div>
+              <div class="seg e" id="segE" style="width:0%"></div>
+              <div class="seg p" id="segP" style="width:0%"></div>
+            </div>
+            <p class="small muted" id="stackLabel" style="margin-top:8px">—</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="pill">Ritmo semanal</div>
+          <div id="bars" class="bars"></div>
+          <p class="small muted" style="margin-top:6px">Publicações por semana (últimas 6 semanas)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTÓRICO -->
+    <section id="historico" class="view"><div class="card"><div class="pill">Histórico mensal</div>
+      <ul class="list" id="listaHistorico"></ul>
+    </div></section>
   </div>
 
 <script>
-/* ====== Config geral ====== */
+/* ===== Persistência compartilhada (KV) ===== */
+const STORE_URL = "/api/store?key=";
+async function loadShared(key, fallback = {}) {
+  try { const r = await fetch(STORE_URL + encodeURIComponent(key), { cache:"no-store" });
+        if(!r.ok) throw 0; return await r.json(); } catch { return fallback; }
+}
+async function saveShared(key, data) {
+  await fetch(STORE_URL + encodeURIComponent(key), {
+    method:"PUT", headers:{ "content-type":"application/json" }, body:JSON.stringify(data)
+  });
+}
+
+/* ===== Estado e helpers ===== */
 const tz = "America/Fortaleza";
 const locale = "pt-BR";
-const KEY = "candieiro_releases_v1";
 
-/* ====== Estado ====== */
 let events = [];
+let roteiros = [];
+let fontes = [];
+let metas = { mes:"2025-11", alvos:{videos_premium:4, previas:2, inexplicavel:1}, producao:{gravados:0, editando:0, publicados:0}, ritmoSemanas:[0,0,0,0,0,0] };
+let historico = [];
 
-/* ====== Helpers ====== */
+function parseISOLocal(s){
+  const [d,t]= (s||"").split("T"); if(!d||!t) return null;
+  const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number);
+  return new Date(Date.UTC(Y,(M||1)-1,D||1,(h||0)+3,(m||0)||0,0)); // Fortaleza ~ UTC-3
+}
 function fmtDate(d){
   return new Intl.DateTimeFormat(locale, {
     timeZone: tz, weekday:'short', day:'2-digit', month:'2-digit', year:'numeric',
@@ -174,14 +269,8 @@ function between(a,b,now){
   const passed = Math.max(0, now - a);
   return { total, passed, pct: total>0 ? Math.min(100, Math.max(0, (passed/total)*100)) : 100 };
 }
-function parseISOLocal(s){
-  const [d,t]= (s||"").split("T"); if(!d||!t) return null;
-  const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number);
-  // Fortaleza UTC-3: cria em UTC somando 3 horas (alinha exibição)
-  return new Date(Date.UTC(Y,(M||1)-1,D||1,(h||0)+3,(m||0)||0,0));
-}
 
-/* ====== Render Dashboard ====== */
+/* ===== Dashboard ===== */
 function renderTimeline(now){
   const ul=document.getElementById('timeline'); ul.innerHTML='';
   [...events].sort((a,b)=>a.when-b.when).forEach(e=>{
@@ -218,7 +307,30 @@ function renderCounters(){
   renderTimeline(now);
 }
 
-/* ====== Render Editor ====== */
+/* ===== Editor + sync ===== */
+const KEY_EVENTS="events", KEY_ROTEIROS="roteiros", KEY_FONTES="fontes",
+      KEY_METAS="metas", KEY_HIST="historico";
+
+async function loadAll(){
+  const [ev, rt, ft, mt, hi] = await Promise.all([
+    loadShared(KEY_EVENTS, []),
+    loadShared(KEY_ROTEIROS, []),
+    loadShared(KEY_FONTES, []),
+    loadShared(KEY_METAS, metas),
+    loadShared(KEY_HIST, [])
+  ]);
+  events=(ev||[]).map(e=>({ ...e, when: parseISOLocal(e.data) })).filter(e=>e.when && !isNaN(e.when));
+  roteiros=rt||[]; fontes=ft||[]; metas=mt||metas; historico=hi||[];
+}
+async function saveAll(){
+  await Promise.all([
+    saveShared(KEY_EVENTS, events.map(e=>({titulo:e.titulo,selo:e.selo,data:e.data}))),
+    saveShared(KEY_ROTEIROS, roteiros),
+    saveShared(KEY_FONTES, fontes),
+    saveShared(KEY_METAS, metas),
+    saveShared(KEY_HIST, historico)
+  ]);
+}
 function renderTable(){
   const tbody = document.getElementById("tblBody"); tbody.innerHTML="";
   events.sort((a,b)=>a.when-b.when).forEach((e,i)=>{
@@ -235,19 +347,160 @@ function renderTable(){
   });
 }
 
-/* ====== Storage ====== */
-function save(){ localStorage.setItem(KEY, JSON.stringify(events.map(e=>({titulo:e.titulo,selo:e.selo,data:e.data})))); }
-function load(){
-  try{
-    const raw=localStorage.getItem(KEY); if(!raw){ events=[]; return; }
-    events = JSON.parse(raw).map(e=>({ ...e, when: parseISOLocal(e.data) })).filter(e=>e.when instanceof Date && !isNaN(e.when));
-  }catch{ events=[]; }
-}
-function rerender(){ renderTable(); renderCounters(); }
+/* Import/Export */
+document.getElementById('exportBtn')?.addEventListener('click', ()=>{
+  const blob=new Blob([JSON.stringify(events.map(e=>({titulo:e.titulo,selo:e.selo,data:e.data})), null, 2)],{type:"application/json"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-events.json"; a.click();
+});
+document.getElementById('importFile')?.addEventListener('change', async (ev)=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=async ()=>{ 
+    const arr=JSON.parse(r.result||"[]");
+    events = arr.map(e=>({ ...e, when: parseISOLocal(e.data) })).filter(e=>e.when && !isNaN(e.when));
+    await saveAll(); rerender();
+  };
+  r.readAsText(f);
+});
 
-/* ====== Exemplo Out/Nov ====== */
-function loadSample(){
-  const sample = [
+/* Toolbar – sync */
+document.getElementById('syncLoad')?.addEventListener('click', async ()=>{ await loadAll(); rerender(); });
+document.getElementById('syncSave')?.addEventListener('click', async ()=>{ await saveAll(); alert("Dados salvos no servidor (KV)."); });
+
+/* Add/Edit/Delete */
+document.getElementById('saveBtn')?.addEventListener('click', async ()=>{
+  const t=document.getElementById('fTitulo').value.trim();
+  const s=document.getElementById('fSelo').value.trim();
+  const d=document.getElementById('fData').value.trim();
+  const when=parseISOLocal(d);
+  if(!t||!s||!when||isNaN(when)){ alert("Preencha título, selo e data (YYYY-MM-DDTHH:MM)"); return; }
+  events.push({titulo:t,selo:s,data:d,when}); await saveAll(); rerender();
+  document.getElementById('form').reset();
+});
+document.getElementById('tblBody')?.addEventListener('click', async (e)=>{
+  const btn=e.target.closest('button'); if(!btn) return;
+  const i=+btn.dataset.i;
+  if(btn.dataset.action==='del'){ events.splice(i,1); await saveAll(); rerender(); }
+  if(btn.dataset.action==='edit'){
+    const item=events[i];
+    document.getElementById('fTitulo').value=item.titulo;
+    document.getElementById('fSelo').value=item.selo;
+    document.getElementById('fData').value=item.data;
+    events.splice(i,1); await saveAll(); rerender();
+  }
+});
+document.getElementById('clearBtn')?.addEventListener('click', async ()=>{
+  if(confirm("Apagar todos os eventos?")){ events=[]; await saveAll(); rerender(); }
+});
+
+/* ===== Metas Visuais ===== */
+function donutCard(titulo, valor, alvo, id){
+  const pct = alvo ? Math.max(0, Math.min(100, (valor/alvo)*100)) : 100;
+  const size=160, stroke=12, radius=(size-stroke)/2, circ=2*Math.PI*radius, dash=circ*(1-pct/100);
+  return `
+  <div class="donut">
+    <svg viewBox="0 0 ${size} ${size}">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1">
+          <stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#fff07a"/>
+        </linearGradient>
+      </defs>
+      <circle class="bg" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"/>
+      <circle class="fg" id="${id}" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"
+              stroke-dasharray="${circ}" stroke-dashoffset="${dash}" transform="rotate(-90 ${size/2} ${size/2})"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#e9edf3" font-size="18" font-weight="700">${Math.round(pct)}%</text>
+    </svg>
+    <div class="kpi">
+      <div class="value">${valor} / ${alvo}</div>
+      <div class="label">${titulo}</div>
+      <div class="legend"><i style="background:#2fe3a1"></i>Progresso</div>
+    </div>
+  </div>`;
+}
+function renderMetasBlocks(whereId){
+  const wrap=document.getElementById(whereId);
+  const a = metas.alvos || {videos_premium:4, previas:2, inexplicavel:1};
+  const p = metas.producao || {gravados:0, editando:0, publicados:0};
+  const premiumPublicados = (historico.find(h=>h.mes===metas.mes)?.publicados||[])
+                            .filter(t=>/Narrativas|Arquivo Criminal/i.test(t)).length || 0;
+  const previasEstimadas = Math.min(a.previas, Math.round(p.editando/2)); // heurística simples
+  const inexpPublicados = (historico.find(h=>h.mes===metas.mes)?.publicados||[])
+                          .filter(t=>/Inexplicável/i.test(t)).length || 0;
+
+  wrap.innerHTML = `
+    ${donutCard("Premium (Narrativas + Arquivo)", premiumPublicados, a.videos_premium, "d1")}
+    ${donutCard("Prévias", previasEstimadas, a.previas, "d2")}
+    ${donutCard("Inexplicável (1/mês)", inexpPublicados, a.inexplicavel, "d3")}
+  `;
+
+  // Barra empilhada (produção)
+  const total = (p.gravados||0)+(p.editando||0)+(p.publicados||0) || 1;
+  document.getElementById("segG").style.width = ((p.gravados||0)/total*100).toFixed(1)+"%";
+  document.getElementById("segE").style.width = ((p.editando||0)/total*100).toFixed(1)+"%";
+  document.getElementById("segP").style.width = ((p.publicados||0)/total*100).toFixed(1)+"%";
+  document.getElementById("stackLabel").textContent =
+    `Gravados: ${p.gravados||0} · Editando: ${p.editando||0} · Publicados: ${p.publicados||0}`;
+
+  // Barras semanais
+  const bars=document.getElementById("bars"); bars.innerHTML="";
+  const arr=metas.ritmoSemanas || [0,0,0,0,0,0];
+  const max=Math.max(...arr, 1);
+  arr.forEach((v,i)=>{
+    const h=Math.round((v/max)*110)+10;
+    const col=document.createElement('div');
+    col.className="col"+(v? "":" muted");
+    col.style.height=h+"px";
+    col.innerHTML = `<small>${v}</small>`;
+    bars.appendChild(col);
+  });
+}
+
+/* ===== Abas extra (catálogos) ===== */
+function renderCatalogs(){
+  const lf = document.getElementById("listaFontes"); lf.innerHTML="";
+  fontes.forEach(f=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<div><strong>${f.titulo||"Fonte"}</strong> · ${f.tipo||"–"} · <span class="muted">${f.tema||""}</span></div>
+    <div>${f.link?`<a class="btn" href="${f.link}" target="_blank" rel="noopener">Abrir</a>`:""}</div>`;
+    lf.appendChild(li);
+  });
+  const lr = document.getElementById("listaRoteiros"); lr.innerHTML="";
+  roteiros.forEach(r=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<div><strong>${r.titulo}</strong> · ${r.selo} · <span class="muted">${r.status||"–"}</span></div>
+    <div>${r.arquivo ? `<a class="btn" href="${r.arquivo}" download>Baixar</a>` : ""}</div>`;
+    lr.appendChild(li);
+  });
+  const q = document.getElementById("qPesquisa");
+  const lp = document.getElementById("listaPesquisa"); lp.innerHTML="";
+  function refreshSearch(){
+    const term=(q.value||"").toLowerCase();
+    lp.innerHTML="";
+    fontes.filter(x=>JSON.stringify(x).toLowerCase().includes(term)).forEach(f=>{
+      const li=document.createElement("li");
+      li.innerHTML = `<div><strong>${f.titulo||"Fonte"}</strong> · ${f.tipo||"–"} · <span class="muted">${f.tema||""}</span></div>
+      <div>${f.link?`<a class="btn" href="${f.link}" target="_blank" rel="noopener">Abrir</a>`:""}</div>`;
+      lp.appendChild(li);
+    });
+  }
+  q?.addEventListener("input", refreshSearch); refreshSearch();
+
+  // Metas (detalhe + resumo)
+  renderMetasBlocks("metasVisual");
+  renderMetasBlocks("metasResumo");
+
+  // Histórico
+  const lh = document.getElementById("listaHistorico"); lh.innerHTML="";
+  (historico||[]).forEach(m=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<div><strong>${m.mes}</strong></div><div class="muted">${(m.publicados||[]).join(", ")||"—"}</div>`;
+    lh.appendChild(li);
+  });
+}
+
+/* ===== Amostra (Out/Nov) ===== */
+function sampleFill(){
+  events = [
     { titulo:"Arquivo Criminal: Ed Gein", selo:"Arquivo Criminal", data:"2025-10-01T18:00" },
     { titulo:"Narrativas: Caso Genivaldo", selo:"Narrativas", data:"2025-10-17T18:00" },
     { titulo:"Narrativas: Aberfan", selo:"Narrativas", data:"2025-10-31T18:00" },
@@ -255,50 +508,26 @@ function loadSample(){
     { titulo:"Narrativas: Chico Mendes", selo:"Narrativas", data:"2025-11-14T18:00" },
     { titulo:"Arquivo Criminal: Amelia Dyer", selo:"Arquivo Criminal", data:"2025-11-19T18:00" },
     { titulo:"Narrativas: Anneliese Michel", selo:"Narrativas", data:"2025-11-28T18:00" }
+  ].map(e=>({ ...e, when: parseISOLocal(e.data) }));
+  roteiros = [
+    {"titulo":"Chico Mendes","selo":"Narrativas","status":"finalizado","arquivo":"/downloads/chico-mendes.pdf"},
+    {"titulo":"Caso Pesseghini","selo":"Arquivo Criminal","status":"em edição","arquivo":"/downloads/pesseghini.pdf"}
   ];
-  localStorage.setItem(KEY, JSON.stringify(sample)); load(); rerender();
+  fontes = [
+    {"tema":"Chico Mendes","tipo":"artigo","titulo":"Reportagem X","link":"https://exemplo.com/x"},
+    {"tema":"Ed Gein","tipo":"livro","titulo":"Deviant","link":"https://exemplo.com/livro"}
+  ];
+  metas = {
+    "mes":"2025-11",
+    "alvos":{"videos_premium":4,"previas":2,"inexplicavel":1},
+    "producao":{"gravados":1,"editando":1,"publicados":0},
+    "ritmoSemanas":[1,0,2,1,0,1]
+  };
+  historico = [{"mes":"2025-10","publicados":["Ed Gein","Genivaldo","Aberfan"]}];
 }
+document.getElementById('addSample')?.addEventListener('click', async ()=>{ sampleFill(); await saveAll(); rerender(); });
 
-/* ====== Import/Export ====== */
-document.getElementById('exportBtn')?.addEventListener('click', ()=>{
-  const blob=new Blob([localStorage.getItem(KEY)||"[]"],{type:"application/json"});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-releases.json"; a.click();
-});
-document.getElementById('importFile')?.addEventListener('change', (ev)=>{
-  const f=ev.target.files[0]; if(!f) return;
-  const r=new FileReader();
-  r.onload=()=>{ localStorage.setItem(KEY, r.result); load(); rerender(); };
-  r.readAsText(f);
-});
-
-/* ====== UI: salvar/editar/excluir ====== */
-document.getElementById('saveBtn')?.addEventListener('click', ()=>{
-  const t=document.getElementById('fTitulo').value.trim();
-  const s=document.getElementById('fSelo').value.trim();
-  const d=document.getElementById('fData').value.trim();
-  const when=parseISOLocal(d);
-  if(!t||!s||!when||isNaN(when)){ alert("Preencha título, selo e data no formato YYYY-MM-DDTHH:MM"); return; }
-  events.push({titulo:t,selo:s,data:d,when}); save(); rerender();
-  document.getElementById('form').reset();
-});
-document.getElementById('tblBody')?.addEventListener('click',(e)=>{
-  const btn=e.target.closest('button'); if(!btn) return;
-  const i=+btn.dataset.i;
-  if(btn.dataset.action==='del'){ events.splice(i,1); save(); rerender(); }
-  if(btn.dataset.action==='edit'){
-    const item=events[i];
-    document.getElementById('fTitulo').value=item.titulo;
-    document.getElementById('fSelo').value=item.selo;
-    document.getElementById('fData').value=item.data;
-    events.splice(i,1); save(); rerender();
-  }
-});
-document.getElementById('clearBtn')?.addEventListener('click', ()=>{
-  if(confirm("Apagar todos os eventos salvos localmente?")){ localStorage.removeItem(KEY); load(); rerender(); }
-});
-document.getElementById('addSample')?.addEventListener('click', loadSample);
-
-/* ====== Tabs ====== */
+/* ===== Tabs ===== */
 document.querySelectorAll('.tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
@@ -308,8 +537,14 @@ document.querySelectorAll('.tab').forEach(btn=>{
   });
 });
 
-/* ====== Boot ====== */
-load(); rerender();
+/* ===== Boot ===== */
+async function boot(){
+  await loadAll();
+  if(!events.length){ sampleFill(); await saveAll(); }
+  rerender();
+}
+function rerender(){ renderTable(); renderCounters(); renderCatalogs(); }
+boot();
 setInterval(renderCounters, 1000);
 </script>
 </body>
