@@ -1,719 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Estúdios Candieiro — Painel Interno</title>
-<link rel="icon" href="/assets/logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
-<meta name="color-scheme" content="dark">
-<style>
-  :root{
-    --bg1:#0b0b0d; --bg2:#1a0f12; --bg3:#231218;
-    --panel:#121720; --line:#213047;
-    --ink:#e9edf3; --muted:#9fb0c8;
-    --accent:#ffcc00; --accent2:#fff07a;
-    --ok:#39d98a; --warn:#ffd166; --bad:#ff6b6b; --blue:#78b9ff;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; color:var(--ink);
-    font-family:system-ui,-apple-system,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-    background:
-      radial-gradient(1200px 800px at 70% 20%, rgba(218,45,64,.08), rgba(0,0,0,0)),
-      linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 60%, var(--bg3) 100%);
-  }
-  /* -------- landing -------- */
-  .landing{min-height:100%; display:flex; flex-direction:column}
-  header{display:flex; align-items:center; justify-content:space-between; padding:18px 22px}
-  .brand{display:flex; align-items:center; gap:12px}
-  .brand img{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#000}
-  .brand-title{font-weight:800; letter-spacing:.3px}
-  main{flex:1; display:grid; place-items:center; padding:22px}
-  .card-landing{
-    width:min(980px, calc(100% - 32px)); display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center;
-    padding:28px; background:rgba(12,12,14,.55); border:1px solid var(--line); border-radius:20px; backdrop-filter: blur(6px);
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
-  }
-  @media (max-width:900px){ .card-landing{grid-template-columns:1fr} }
-  .hero{display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; padding:8px}
-  .avatar{width:220px; height:220px; object-fit:cover; border-radius:50%;
-    border:3px solid rgba(255,204,0,.9); box-shadow:0 0 40px rgba(255,90,90,.18); background:#111}
-  .quote{font-family:'Cinzel', serif; font-size:28px; line-height:1.25; color:#fff; letter-spacing:.3px}
-  .quote small{display:block; margin-top:10px; color:var(--muted); font-size:14px}
-  .pane{background:rgba(0,0,0,.28); border:1px solid var(--line); border-radius:16px; padding:22px}
-  .pane h2{margin:0 0 8px; font-size:18px; color:#fff}
-  .pane p{margin:0 0 16px; color:var(--muted); font-size:14px}
-  .field{display:flex; gap:10px; margin-top:8px}
-  input{flex:1; background:#111215; color:#e7eaef; border:1px solid #2b2e37; border-radius:12px; padding:12px 14px; font-size:15px; outline:none}
-  input::placeholder{color:#7c8394}
-  .btn{
-    background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#201a00; border:1px solid #d6b400;
-    border-radius:12px; padding:12px 16px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(255,204,0,.18)
-  }
-  .btn:hover{filter:brightness(1.05)}
-  .error{color:#ffb3b3; font-size:13px; margin-top:8px; min-height:18px}
-  footer{padding:16px 22px; color:var(--muted); font-size:12px; text-align:center}
-
-  /* -------- app shell -------- */
-  .app{display:none} /* aparece após login */
-  .wrap{max-width:1060px; margin:28px auto 48px; padding:0 16px}
-  .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px}
-  .logo{display:flex; align-items:center; gap:12px}
-  .logo img{width:36px;height:36px;border-radius:8px}
-  .sub{color:var(--muted); font-size:13px}
-  .avatar-sm{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
-  nav{display:flex; gap:8px; flex-wrap:wrap}
-  .tab{background:#151e2c; border:1px solid var(--line); color:#cfe6ff; padding:8px 12px; border-radius:10px; cursor:pointer}
-  .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border-color:#d4b100}
-  .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .row{display:flex; gap:16px; flex-wrap:wrap}
-  .row .card{flex:1 1 280px}
-  .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1420; border:1px solid var(--line); color:#9fb0c8; font-size:12px}
-  .big{font-size:34px; font-weight:800; letter-spacing:.2px}
-  .bar{height:12px; background:#0e1420; border:1px solid var(--line); border-radius:999px; overflow:hidden}
-  .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .6s ease}
-  .view{display:none} .view.active{display:block}
-  .muted{color:var(--muted)} .small{font-size:12px}
-  table{width:100%; border-collapse:collapse; font-size:14px}
-  th,td{padding:10px; border-bottom:1px dashed #223046; text-align:left}
-  th{color:#a9bdd7; font-weight:600}
-  .select{background:#0e1420;color:#cfe6ff;border:1px solid var(--line);border-radius:10px;padding:10px}
-
-  /* metas visuais */
-  .meta-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
-  @media (max-width:900px){ .meta-grid{grid-template-columns:1fr} }
-  .donut{--size:160; --stroke:12; display:flex; align-items:center; gap:12px}
-  .donut svg{width:var(--size)px; height:var(--size)px}
-  .donut .bg{stroke:#1f2938; opacity:.9}
-  .donut .fg{stroke:url(#g1); transition:stroke-dashoffset .7s ease}
-  .kpi{display:flex; flex-direction:column; gap:2px}
-  .kpi .value{font-size:28px; font-weight:800}
-  .kpi .label{font-size:13px; color:#9fb0c8}
-  .stack{height:18px; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:#0e1420; display:flex}
-  .seg{height:100%} .g{background:linear-gradient(90deg,#2fe3a1,#8ef4cd)}
-  .e{background:linear-gradient(90deg,#ffd166,#ffe9a6)} .p{background:linear-gradient(90deg,#6dc1ff,#a9d8ff)}
-  .bars{display:flex; gap:8px; align-items:flex-end; height:120px; margin-top:8px}
-  .bars .col{flex:1; background:linear-gradient(180deg,#ffcc00,#ffd84d); border:1px solid #d7b000; border-radius:6px 6px 0 0; min-width:28px; display:flex; align-items:flex-end; justify-content:center; color:#1d1700; font-weight:700}
-  .bars .col small{display:block; padding:6px 2px}
-  .bars .col.muted{background:linear-gradient(180deg,#243146,#1a232f); border-color:#1f2a3d; color:#a9bdd7}
-  .progress-steps{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:10px}
-  .step{background:#0f1420; border:1px solid var(--line); border-radius:10px; padding:10px; text-align:center}
-  .step.done{background:linear-gradient(180deg,#13212f,#0d161f)}
-  .step .s-title{font-size:12px; color:#a9bdd7}
-  .step .s-time{font-size:12px; color:#7ea0d1}
-  .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px}
-  .ok{background:var(--ok)} .warn{background:var(--warn)} .bad{background:var(--bad)} .blue{background:var(--blue)}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estúdios Candieiro - Painel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #000000, #220000);
+      color: #fff;
+    }
+    .landing {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .landing img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 4px solid gold;
+      margin-bottom: 20px;
+    }
+    .landing h1 {
+      font-family: "Cinzel", serif;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .landing h2 {
+      font-weight: normal;
+      font-size: 1rem;
+      color: #aaa;
+    }
+    .login-box {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 12px;
+    }
+    .login-box input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+      font-size: 1rem;
+    }
+    .login-box button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: gold;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .error {
+      color: #ff5555;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    /* painel escondido até login */
+    #app { display: none; padding: 20px; }
+    nav {
+      background: #111;
+      padding: 10px;
+      display: flex;
+      gap: 15px;
+    }
+    nav a {
+      color: gold;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-
-<!-- ================= LANDING ================= -->
-<section id="landing" class="landing">
-  <header>
-    <div class="brand">
-      <img src="/assets/logo.png" alt="Estúdios Candieiro">
-      <div>
-        <div class="brand-title">Estúdios Candieiro</div>
-        <div class="muted small">Painel interno de produção</div>
-      </div>
+  <!-- Landing / Login -->
+  <div id="landing" class="landing">
+    <img src="perfil paulo site.png" alt="Paulo Henrique Leitão" />
+    <h1>“A HISTÓRIA MAIS IMPORTANTE<br>É SEMPRE A PRÓXIMA”</h1>
+    <h2>Paulo Henrique Leitão</h2>
+    <div class="login-box">
+      <p><strong>Acesso restrito</strong></p>
+      <input id="pwd" type="password" placeholder="Digite a senha" />
+      <button id="go">Entrar</button>
+      <div id="err" class="error"></div>
     </div>
-  </header>
-
-  <main>
-    <div class="card-landing">
-      <div class="hero">
-        <img class="avatar" src="/assets/paulo.jpg" alt="Paulo Henrique Leitão">
-        <div class="quote">“A história mais importante é sempre a próxima”<small>Paulo Henrique Leitão</small></div>
-      </div>
-
-      <div class="pane">
-        <h2>Acesso restrito</h2>
-        <p>Insira a senha para entrar no <strong>Painel Interno de Produção</strong>.</p>
-        <div class="field">
-          <input id="pwd" type="password" placeholder="Senha de acesso">
-          <button id="go" class="btn">Entrar</button>
-        </div>
-        <div id="err" class="error"></div>
-        <p class="muted small" style="margin-top:14px">Dica: você pode reforçar a segurança ativando <strong>Cloudflare Access</strong> sobre <code>/*</code>.</p>
-      </div>
-    </div>
-  </main>
-
-  <footer>© Estúdios Candieiro — Painel interno · Canal Paulo Henrique Leitão</footer>
-</section>
-
-<!-- ================= APP ================= -->
-<section id="app" class="app">
-  <div class="wrap">
-    <div class="top">
-      <div class="logo">
-        <img src="/assets/logo.png" alt="logo">
-        <div>
-          <div style="font-weight:800">Estúdios Candieiro</div>
-          <div class="sub">Painel de Produção — America/Fortaleza</div>
-        </div>
-      </div>
-      <img src="/assets/paulo.jpg" class="avatar-sm" alt="Paulo">
-    </div>
-
-    <nav>
-      <button class="tab active" data-view="dashboard">Dashboard</button>
-      <button class="tab" data-view="editor">Editor</button>
-      <button class="tab" data-view="pesquisa">Pesquisa</button>
-      <button class="tab" data-view="roteiros">Roteiros</button>
-      <button class="tab" data-view="fontes">Fontes</button>
-      <button class="tab" data-view="metas">Metas</button>
-      <button class="tab" data-view="historico">Histórico</button>
-    </nav>
-
-    <!-- ===== DASHBOARD ===== -->
-    <section id="dashboard" class="view active">
-      <div class="card">
-        <div class="pill">Produção</div>
-        <div class="row" style="align-items:flex-end">
-          <div style="flex:2">
-            <label class="small muted">Selecionar produção</label>
-            <select id="selProd" class="select"></select>
-            <div class="progress-steps" id="steps"></div>
-          </div>
-          <div class="card" style="flex:1">
-            <div class="pill">Próximo vídeo em</div>
-            <div id="countdown" class="big" style="margin:8px 0 6px">--:--:--</div>
-            <div class="muted small" id="nextLabel">Carregando…</div>
-            <div class="pill" style="margin-top:12px">Entre lançamentos</div>
-            <div class="bar" style="margin:8px 0"><span id="progress"></span></div>
-            <div class="muted small" id="progressLabel">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid2">
-        <div class="card">
-          <div class="pill">Ritmo semanal</div>
-          <div id="bars" class="bars"></div>
-          <p class="small muted" style="margin-top:6px">Publicações por semana (últimas 6 semanas)</p>
-        </div>
-        <div class="card">
-          <div class="pill">Workflow em andamento</div>
-          <ul id="flowList" class="small muted" style="line-height:1.9"></ul>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="pill">Linha do tempo</div>
-        <ul class="list" id="timeline"></ul>
-      </div>
-    </section>
-
-    <!-- ===== EDITOR ===== -->
-    <section id="editor" class="view">
-      <div class="card">
-        <div class="pill">Cadastrar/Editar Produção (salva automaticamente no KV)</div>
-
-        <form id="form" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0">
-          <div><label class="small muted">Título</label><input id="fTitulo" placeholder="Narrativas: Chico Mendes"></div>
-          <div><label class="small muted">Selo</label>
-            <select id="fSelo" class="select">
-              <option>Narrativas</option><option>Arquivo Criminal</option><option>Inexplicável</option><option>Prévia</option><option>Abertos</option>
-            </select>
-          </div>
-          <div><label class="small muted">Data & hora (YYYY-MM-DDTHH:MM)</label><input id="fData" placeholder="2025-11-14T18:00"></div>
-          <div><label class="small muted">Link (opcional) do vídeo / doc</label><input id="fLink" placeholder="https://..."></div>
-
-          <div style="grid-column:1/-1"><div class="pill">Roteiro (PDF)</div></div>
-          <div><label class="small muted">Anexar PDF</label><input id="fPDF" type="file" accept="application/pdf"></div>
-          <div><label class="small muted">Notas do Roteiro</label><input id="fNotas" placeholder="Observações rápidas"></div>
-
-          <div style="grid-column:1/-1"><div class="pill">Avaliação do Roteiro</div></div>
-          <div><label class="small muted">Força Narrativa</label><input id="rForca" type="number" min="1" max="5" value="4"></div>
-          <div><label class="small muted">Impacto Emocional</label><input id="rEmocional" type="number" min="1" max="5" value="4"></div>
-          <div><label class="small muted">Carga dramática & Sensibilidade</label><input id="rDrama" type="number" min="1" max="5" value="4"></div>
-          <div><label class="small muted">Credibilidade</label><input id="rCred" type="number" min="1" max="5" value="4"></div>
-          <div><label class="small muted">Originalidade</label><input id="rOrig" type="number" min="1" max="5" value="4"></div>
-
-          <div style="grid-column:1/-1"><div class="pill">Workflow da Produção (marca o que concluir)</div></div>
-          <div><label><input type="checkbox" id="wPesquisa"> Pesquisa</label></div>
-          <div><label><input type="checkbox" id="wRoteiro"> Roteiro</label></div>
-          <div><label><input type="checkbox" id="wGravacao"> Gravação</label></div>
-          <div><label><input type="checkbox" id="wDecupagem"> Decupagem</label></div>
-          <div><label><input type="checkbox" id="wEdicao"> Edição</label></div>
-          <div><label><input type="checkbox" id="wPostagem"> Postagem</label></div>
-
-          <div style="grid-column:1/-1"><div class="pill">Pesquisa (links)</div></div>
-          <div style="grid-column:1/-1">
-            <div style="display:flex; gap:8px; margin-bottom:8px">
-              <input id="linkTitulo" placeholder="Título do link">
-              <input id="linkURL" placeholder="https://...">
-              <button type="button" class="btn" id="addLink">Adicionar link</button>
-            </div>
-            <ul id="linksTmp" class="small muted"></ul>
-          </div>
-
-          <div style="grid-column:1/-1"><div class="pill">Metas</div></div>
-          <div><label class="small muted">Meta de inscritos</label><input id="metaInscritos" type="number" placeholder="ex: 100000"></div>
-          <div><label class="small muted">Prazo da meta (YYYY-MM-DD)</label><input id="metaPrazo" placeholder="2026-06-01"></div>
-          <div><label class="small muted">Meta ritmo semanal (vídeos)</label><input id="metaRitmo" type="number" value="1"></div>
-        </form>
-
-        <div class="row">
-          <button id="saveBtn" class="btn">Salvar/Adicionar produção</button>
-          <button id="clearBtn" class="btn" style="background:#1b2638;color:#cfe6ff;border-color:#334e74">Limpar campos</button>
-          <button id="exportBtn" class="btn" style="background:#1b2638;color:#cfe6ff;border-color:#334e74">Exportar JSON</button>
-          <label for="importFile" class="btn" style="cursor:pointer">Importar JSON<input id="importFile" type="file" accept=".json" style="display:none"></label>
-          <button id="syncLoad" class="btn" style="background:#1b2638;color:#cfe6ff;border-color:#334e74">Recarregar do servidor</button>
-          <button id="syncSave" class="btn" style="background:#1b2638;color:#cfe6ff;border-color:#334e74">Forçar salvar no servidor</button>
-        </div>
-
-        <table style="margin-top:14px">
-          <thead><tr><th>Título</th><th>Selo</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
-          <tbody id="tblBody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== PESQUISA ===== -->
-    <section id="pesquisa" class="view">
-      <div class="card">
-        <div class="pill">Expositor de links (coletados via Editor)</div>
-        <ul id="listaPesquisa" class="list"></ul>
-      </div>
-    </section>
-
-    <!-- ===== ROTEIROS ===== -->
-    <section id="roteiros" class="view">
-      <div class="card">
-        <div class="pill">Roteiros anexados</div>
-        <ul id="listaRoteiros" class="list"></ul>
-      </div>
-    </section>
-
-    <!-- ===== FONTES ===== -->
-    <section id="fontes" class="view">
-      <div class="card">
-        <div class="pill">Repositório de fontes</div>
-        <ul id="listaFontes" class="list"></ul>
-      </div>
-    </section>
-
-    <!-- ===== METAS ===== -->
-    <section id="metas" class="view">
-      <div class="card">
-        <div class="pill">Metas visuais</div>
-        <div id="metasVisual" class="meta-grid" style="margin-top:12px"></div>
-      </div>
-
-      <div class="grid2">
-        <div class="card">
-          <div class="pill">Produção (Gravados / Editando / Publicados)</div>
-          <div class="stack" style="margin-top:8px">
-            <div class="seg g" id="segG" style="width:0%"></div>
-            <div class="seg e" id="segE" style="width:0%"></div>
-            <div class="seg p" id="segP" style="width:0%"></div>
-          </div>
-          <p class="small muted" id="stackLabel" style="margin-top:8px">—</p>
-        </div>
-        <div class="card">
-          <div class="pill">Ritmo semanal</div>
-          <div id="barsMetas" class="bars"></div>
-          <p class="small muted" style="margin-top:6px">Publicações por semana (últimas 6 semanas)</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== HISTÓRICO ===== -->
-    <section id="historico" class="view">
-      <div class="card">
-        <div class="pill">Histórico mensal</div>
-        <ul class="list" id="listaHistorico"></ul>
-      </div>
-    </section>
-
   </div>
-</section>
 
-<script>
-/* =========================
-   LOGIN / LANDING
-========================= */
-const PASS="PPQ3105";
-document.getElementById('go').addEventListener('click',enter);
-document.getElementById('pwd').addEventListener('keydown',e=>{ if(e.key==="Enter") enter(); });
-function enter(){
-  const v=(document.getElementById('pwd').value||"").trim();
-  const err=document.getElementById('err');
-  if(!v){err.textContent="Digite a senha";return;}
-  if(v!==PASS){err.textContent="Senha incorreta";return;}
-  sessionStorage.setItem("candieiro_ok","1");
-  document.getElementById('landing').style.display="none";
-  document.getElementById('app').style.display="block";
-  boot();
-}
-if(sessionStorage.getItem("candieiro_ok")==="1"){ document.getElementById('landing').style.display="none"; document.getElementById('app').style.display="block"; }
+  <!-- Painel principal -->
+  <div id="app">
+    <nav>
+      <a href="#">Dashboard</a>
+      <a href="#">Editor</a>
+      <a href="#">Pesquisa</a>
+      <a href="#">Roteiro</a>
+      <a href="#">Fontes</a>
+      <a href="#">Metas</a>
+    </nav>
+    <h1>Bem-vindo ao Painel de Produção</h1>
+    <p>Aqui você controla o fluxo criativo dos Estúdios Candieiro.</p>
+  </div>
 
-/* =========================
-   PERSISTÊNCIA (KV)
-========================= */
-const STORE="/api/store?key=";
-async function getKV(key,fallback){try{const r=await fetch(STORE+encodeURIComponent(key),{cache:"no-store"});if(!r.ok)throw 0;return await r.json()}catch{return fallback}}
-async function putKV(key,val){await fetch(STORE+encodeURIComponent(key),{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify(val)})}
+  <script>
+  /* =========================
+     LOGIN / LANDING  (patch v5.1)
+  ========================= */
+  const PASS = "PPQ3105".trim();  // senha definida
 
-/* =========================
-   ESTADO
-========================= */
-const tz="America/Fortaleza", locale="pt-BR";
-let productions=[]; // array de produção
-let metas={ mes:"2025-11", alvos:{narrativas:2, arquivo:2, inexplicavel:1, previas:2}, inscritos:{alvo:100000,prazo:"2026-06-01"}, ritmoSemanas:[1,0,2,1,0,1] };
-let historico=[];
+  const $ = (sel) => document.querySelector(sel);
+  const landing  = $('#landing');
+  const app      = $('#app');
+  const pwdInput = $('#pwd');
+  const btnGo    = $('#go');
+  const errBox   = $('#err');
 
-const STAGES=[ // ordem importa p/ progresso
-  { key:"pesquisa",  label:"Pesquisa",   dias:1 },
-  { key:"roteiro",   label:"Roteiro",    dias:2 },
-  { key:"gravacao",  label:"Gravação",   dias:1 },
-  { key:"decupagem", label:"Decupagem",  dias:2 },
-  { key:"edicao",    label:"Edição",     dias:3 },
-  { key:"postagem",  label:"Postagem",   dias:0 },
-];
+  function normalize(v){ return (v||"").toString().trim().toUpperCase(); }
+  function isOK(v){ return normalize(v) === normalize(PASS); }
 
-function parseISOLocal(s){const [d,t]=(s||"").split("T"); if(!d||!t) return null; const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number); return new Date(Date.UTC(Y,(M||1)-1,D||1,(h||0)+3,(m||0)||0,0))}
-function fmtDate(d){return new Intl.DateTimeFormat(locale,{timeZone:tz,weekday:'short',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d).replace(',', '')}
-function human(ms){const s=Math.max(0,Math.floor(ms/1000));const d=Math.floor(s/86400);const h=Math.floor((s%86400)/3600);const m=Math.floor((s%3600)/60);const ss=s%60;return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`}
-function between(a,b,now){const total=b-a; const pass=Math.max(0,now-a); return {total,pass,pct: total>0? Math.min(100,Math.max(0,(pass/total)*100)):100}}
-
-/* =========================
-   DASHBOARD helpers
-========================= */
-function timeline(){
-  const ul=document.getElementById('timeline'); ul.innerHTML='';
-  [...productions].sort((a,b)=>a.when-b.when).forEach(p=>{
-    const li=document.createElement('li');
-    const left=document.createElement('div'); left.innerHTML=`<strong>${p.title}</strong><div class="muted small">${fmtDate(p.when)} · ${p.selo}</div>`;
-    const right=document.createElement('div');
-    const tag=document.createElement('span'); tag.className='tab'; tag.textContent=stageLabel(p);
-    right.appendChild(tag); li.append(left,right); ul.appendChild(li);
-  });
-}
-function stageLabel(p){
-  for(const s of STAGES){ if(!p.stages[s.key]?.done) return s.label }
-  return "Concluído";
-}
-function setBars(nodeId, arr){
-  const wrap=document.getElementById(nodeId); wrap.innerHTML="";
-  const max=Math.max(...arr,1);
-  arr.forEach(v=>{
-    const h=Math.round((v/max)*110)+10;
-    const col=document.createElement('div'); col.className="col"+(v? "":" muted"); col.style.height=h+"px"; col.innerHTML=`<small>${v}</small>`;
-    wrap.appendChild(col);
-  });
-}
-function flowStatus(){
-  const flow={pesquisa:0,roteiro:0,gravacao:0,decupagem:0,edicao:0,postagem:0};
-  productions.forEach(p=>{
-    for(const s of STAGES){
-      if(!p.stages[s.key]?.done){ flow[s.key]++; break; }
-    }
-  });
-  const ul=document.getElementById('flowList'); ul.innerHTML="";
-  STAGES.forEach(s=>{
-    const li=document.createElement('li');
-    li.textContent=`${s.label}: ${flow[s.key]} `; 
-    const i=document.createElement('span'); i.className="status-dot blue"; li.appendChild(i);
-    ul.appendChild(li);
-  });
-}
-
-/* progresso detalhado por produção */
-function renderSteps(p){
-  // construir blocos
-  const div=document.getElementById('steps'); div.innerHTML="";
-  STAGES.forEach(s=>{
-    const st=p.stages[s.key]||{};
-    const done=!!st.done;
-    const box=document.createElement('div'); box.className="step"+(done?" done":"");
-    const title=document.createElement('div'); title.className="s-title"; title.textContent=s.label;
-    const time=document.createElement('div'); time.className="s-time";
-    // tempo gasto vs prazo
-    let spent="—", statusClass="blue";
-    if(st.start){
-      const start=new Date(st.start);
-      const end = done ? new Date(st.end) : new Date();
-      const ms=end-start;
-      const dd=s.dias*24*60*60*1000;
-      spent = human(ms);
-      if(!done && ms>dd) statusClass="bad";
-      else if(ms>dd*0.8 && !done) statusClass="warn";
-      else statusClass="ok";
-    }
-    time.innerHTML = `<span class="status-dot ${statusClass}"></span> ${spent}`;
-    box.append(title,time); div.appendChild(box);
-  });
-}
-
-/* próximo vídeo + barra entre lançamentos */
-function counters(){
-  const now=new Date();
-  const sorted=[...productions].sort((a,b)=>a.when-b.when);
-  const next=sorted.find(p=>p.when>now) || sorted[sorted.length-1];
-  const prevs=sorted.filter(p=>p.when<=now); const prev=prevs.length? prevs[prevs.length-1]:null;
-
-  document.getElementById('countdown').textContent=next? human(next.when-now):"--:--:--";
-  document.getElementById('nextLabel').textContent=next? `Próximo: ${next.title} • ${fmtDate(next.when)}`:"Sem próximos eventos";
-  const pg=document.getElementById('progress'), pgl=document.getElementById('progressLabel');
-  if(prev && next){ const m=between(prev.when,next.when,now); pg.style.width=m.pct.toFixed(1)+"%"; pgl.textContent=`Desde “${prev.title}” até “${next.title}” • ${m.pct.toFixed(1)}%`; } else { pg.style.width='0%'; pgl.textContent='Aguardando primeiro lançamento.' }
-}
-
-/* =========================
-   RENDER GERAL
-========================= */
-function renderAll(){
-  // select produção
-  const sel=document.getElementById('selProd'); sel.innerHTML="";
-  productions.sort((a,b)=>a.when-b.when).forEach((p,i)=>{
-    const o=document.createElement('option'); o.value=i; o.textContent=`${fmtDate(p.when)} — ${p.title}`; sel.appendChild(o);
-  });
-  sel.onchange=()=>{ const p=productions[+sel.value]; renderSteps(p); };
-  if(productions.length){ sel.value=0; renderSteps(productions[0]); }
-
-  // timeline / counters / workflow / barras
-  timeline(); counters(); flowStatus();
-  setBars("bars", metas.ritmoSemanas||[0,0,0,0,0,0]);
-  setBars("barsMetas", metas.ritmoSemanas||[0,0,0,0,0,0]);
-
-  // metas visuais (donuts + stack)
-  renderMetasVisuais();
-  renderRoteiros();
-  renderFontesPesquisa();
-}
-
-/* =========================
-   METAS VISUAIS
-========================= */
-function donutHTML(label, value, goal, id){
-  const size=160, stroke=12, radius=(size-stroke)/2, circ=2*Math.PI*radius;
-  const pct=goal? Math.max(0,Math.min(100,(value/goal)*100)): 100;
-  const dash=circ*(1-pct/100);
-  return `
-  <div class="donut">
-    <svg viewBox="0 0 ${size} ${size}">
-      <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#fff07a"/></linearGradient></defs>
-      <circle class="bg" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"/>
-      <circle class="fg" cx="${size/2}" cy="${size/2}" r="${radius}" stroke-width="${stroke}" fill="none"
-              stroke-dasharray="${circ}" stroke-dashoffset="${dash}" transform="rotate(-90 ${size/2} ${size/2})"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#e9edf3" font-size="18" font-weight="700">${Math.round(pct)}%</text>
-    </svg>
-    <div class="kpi"><div class="value">${value} / ${goal}</div><div class="label">${label}</div></div>
-  </div>`;
-}
-function renderMetasVisuais(){
-  // contagem por selo no histórico do mês atual
-  const mes = metas.mes;
-  const publicados = historico.find(h=>h.mes===mes)?.publicados||[];
-  const cont = {narrativas:0,arquivo:0,inexplicavel:0,previas:0};
-  publicados.forEach(t=>{
-    if(/Narrativas/i.test(t)) cont.narrativas++;
-    if(/Arquivo Criminal/i.test(t)) cont.arquivo++;
-    if(/Inexplicável/i.test(t)) cont.inexplicavel++;
-    if(/Prévia/i.test(t)) cont.previas++;
-  });
-  const wrap=document.getElementById('metasVisual');
-  wrap.innerHTML = `
-    ${donutHTML("Narrativas", cont.narrativas, metas.alvos.narrativas, "m1")}
-    ${donutHTML("Arquivo Criminal", cont.arquivo, metas.alvos.arquivo, "m2")}
-    ${donutHTML("Inexplicável", cont.inexplicavel, metas.alvos.inexplicavel, "m3")}
-  `;
-  // barra empilhada
-  const counts={gravados:0,editando:0,publicados:0};
-  productions.forEach(p=>{
-    const s = stageLabel(p);
-    if(s==="Pesquisa"||s==="Roteiro") counts.editando++;
-    else if(s==="Gravação"||s==="Decupagem"||s==="Edição") counts.gravados++;
-    else if(s==="Postagem"||s==="Concluído") counts.publicados++;
-  });
-  const tot=Math.max(counts.gravados+counts.editando+counts.publicados,1);
-  document.getElementById('segG').style.width = (counts.gravados/tot*100).toFixed(1)+"%";
-  document.getElementById('segE').style.width = (counts.editando/tot*100).toFixed(1)+"%";
-  document.getElementById('segP').style.width = (counts.publicados/tot*100).toFixed(1)+"%";
-  document.getElementById('stackLabel').textContent=`Gravados: ${counts.gravados} · Editando: ${counts.editando} · Publicados: ${counts.publicados}`;
-}
-
-/* =========================
-   ROTEIROS & FONTES/PESQUISA
-========================= */
-function renderRoteiros(){
-  const ul=document.getElementById('listaRoteiros'); ul.innerHTML="";
-  productions.forEach((p,idx)=>{
-    if(p.roteiro && (p.roteiro.pdfName || p.roteiro.pdfData)){
-      const li=document.createElement('li');
-      li.innerHTML=`<div><strong>${p.title}</strong> · ${p.selo}
-        <div class="small muted">Força:${p.roteiro.av.forca}/5 · Emocional:${p.roteiro.av.emocional}/5 · Drama/Sensib:${p.roteiro.av.drama}/5 · Cred:${p.roteiro.av.cred}/5 · Orig:${p.roteiro.av.orig}/5</div></div>
-        <div><button class="tab" data-open="${idx}">Abrir PDF</button></div>`;
-      ul.appendChild(li);
-    }
-  });
-  ul.onclick=(e)=>{
-    const b=e.target.closest('button[data-open]'); if(!b) return;
-    const p=productions[+b.dataset.open];
-    if(p.roteiro?.pdfData){
-      const blob=b64toBlob(p.roteiro.pdfData,"application/pdf");
-      const url=URL.createObjectURL(blob); window.open(url,"_blank");
-    }else if(p.roteiro?.pdfURL){ window.open(p.roteiro.pdfURL,"_blank"); }
-  };
-}
-function renderFontesPesquisa(){
-  const fontes=[];
-  productions.forEach(p=> (p.links||[]).forEach(l=>fontes.push({...l, tema:p.title})));
-  const lf=document.getElementById('listaFontes'); lf.innerHTML="";
-  const lp=document.getElementById('listaPesquisa'); lp.innerHTML="";
-  fontes.forEach(f=>{
-    const item=`<div><strong>${f.titulo||"Fonte"}</strong> · <span class="muted">${f.tema}</span></div>
-                <div><a class="tab" href="${f.url}" target="_blank" rel="noopener">Abrir</a></div>`;
-    const li1=document.createElement('li'); li1.innerHTML=item; lf.appendChild(li1);
-    const li2=document.createElement('li'); li2.innerHTML=item; lp.appendChild(li2);
-  });
-}
-
-/* =========================
-   EDITOR
-========================= */
-function b64(file){return new Promise((res,rej)=>{const r=new FileReader(); r.onload=()=>res((r.result||"").split(",")[1]||""); r.onerror=rej; r.readAsDataURL(file)})}
-function b64toBlob(b64,mime){const bin=atob(b64); const len=bin.length; const bytes=new Uint8Array(len); for(let i=0;i<len;i++) bytes[i]=bin.charCodeAt(i); return new Blob([bytes],{type:mime}) }
-
-document.getElementById('addLink').onclick=()=>{
-  const t=document.getElementById('linkTitulo').value.trim();
-  const u=document.getElementById('linkURL').value.trim();
-  if(!u) return;
-  tempLinks.push({titulo:t,url:u});
-  renderTempLinks();
-  document.getElementById('linkTitulo').value=""; document.getElementById('linkURL').value="";
-};
-function renderTempLinks(){
-  const ul=document.getElementById('linksTmp'); ul.innerHTML="";
-  tempLinks.forEach((l,i)=>{
-    const li=document.createElement('li'); li.innerHTML=`${l.titulo||"link"} · <a href="${l.url}" target="_blank">${l.url}</a> `;
-    ul.appendChild(li);
-  });
-}
-let tempLinks=[];
-
-document.getElementById('saveBtn').onclick=async ()=>{
-  const t=document.getElementById('fTitulo').value.trim();
-  const s=document.getElementById('fSelo').value.trim();
-  const d=document.getElementById('fData').value.trim();
-  if(!t||!s||!d){ alert("Preencha título, selo e data"); return; }
-
-  const p={
-    title:t, selo:s, data:d, when:parseISOLocal(d),
-    link: document.getElementById('fLink').value.trim() || "",
-    stages: {
-      pesquisa:  stageObj('wPesquisa'),
-      roteiro:   stageObj('wRoteiro'),
-      gravacao:  stageObj('wGravacao'),
-      decupagem: stageObj('wDecupagem'),
-      edicao:    stageObj('wEdicao'),
-      postagem:  stageObj('wPostagem'),
-    },
-    roteiro:{
-      notas: document.getElementById('fNotas').value.trim(),
-      av:{
-        forca:+document.getElementById('rForca').value||0,
-        emocional:+document.getElementById('rEmocional').value||0,
-        drama:+document.getElementById('rDrama').value||0,
-        cred:+document.getElementById('rCred').value||0,
-        orig:+document.getElementById('rOrig').value||0,
-      }
-    },
-    links:[...tempLinks]
-  };
-
-  // PDF
-  const file=document.getElementById('fPDF').files[0];
-  if(file){ p.roteiro.pdfName=file.name; p.roteiro.pdfData=await b64(file); }
-  productions.push(p);
-  await saveAll(); resetForm(); renderAll();
-};
-function stageObj(id){ const checked=document.getElementById(id).checked; return { done:checked, start:new Date().toISOString(), end: checked? new Date().toISOString():null }; }
-function resetForm(){ document.getElementById('form').reset(); tempLinks=[]; renderTempLinks(); }
-
-document.getElementById('clearBtn').onclick=resetForm;
-document.getElementById('exportBtn').onclick=()=>{
-  const blob=new Blob([JSON.stringify({productions,metas,historico},null,2)],{type:"application/json"});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-export.json"; a.click();
-};
-document.getElementById('importFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=async ()=>{ const j=JSON.parse(r.result||"{}"); productions=j.productions||[]; metas=j.metas||metas; historico=j.historico||[]; await saveAll(); renderAll(); };
-  r.readAsText(f);
-};
-document.getElementById('syncLoad').onclick=async ()=>{ await loadAll(); renderAll(); };
-document.getElementById('syncSave').onclick=async ()=>{ await saveAll(); alert("Dados salvos no servidor (KV)."); };
-
-document.getElementById('tblBody').onclick=async (e)=>{
-  const b=e.target.closest('button[data-i]'); if(!b) return;
-  const i=+b.dataset.i; const act=b.dataset.act;
-  if(act==="del"){ if(confirm("Excluir produção?")){ productions.splice(i,1); await saveAll(); renderAll(); } }
-  if(act==="toggle"){ const p=productions[i]; // avança 1 etapa
-    for(const s of STAGES){ if(!p.stages[s.key]?.done){ p.stages[s.key]={done:true,start:p.stages[s.key]?.start||new Date().toISOString(),end:new Date().toISOString()}; break; }
-    await saveAll(); renderAll();
+  function grantAccess(){
+    sessionStorage.setItem("candieiro_ok","1");
+    landing.style.display = "none";
+    app.style.display     = "block";
   }
-};
 
-/* =========================
-   LOAD/SAVE
-========================= */
-async function loadAll(){
-  const data=await getKV("productions",[]);
-  productions=(data||[]).map(p=>({...p, when:parseISOLocal(p.data)})).filter(p=>p.when && !isNaN(p.when));
-  metas=await getKV("metas",metas);
-  historico=await getKV("historico",historico);
-}
-async function saveAll(){
-  await putKV("productions",productions.map(p=>({...p, when:undefined})));
-  await putKV("metas",metas);
-  await putKV("historico",historico);
-}
-
-/* =========================
-   TABELA DE PRODUÇÕES
-========================= */
-function renderTable(){
-  const tb=document.getElementById('tblBody'); tb.innerHTML="";
-  productions.sort((a,b)=>a.when-b.when).forEach((p,i)=>{
-    const status=stageLabel(p);
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${p.title}</td>
-      <td>${p.selo}</td>
-      <td>${fmtDate(p.when)}</td>
-      <td>${status}</td>
-      <td>
-        <button class="tab" data-i="${i}" data-act="toggle">✓ Etapa concluída</button>
-        <button class="tab" data-i="${i}" data-act="del">Excluir</button>
-      </td>`;
-    tb.appendChild(tr);
-  });
-}
-
-/* =========================
-   BOOT / RENDER LOOP
-========================= */
-async function boot(){
-  await loadAll();
-  if(!productions.length){ // exemplo inicial
-    const sample=[
-      {title:"Arquivo Criminal: Ed Gein",selo:"Arquivo Criminal",data:"2025-10-01T18:00"},
-      {title:"Narrativas: Caso Genivaldo",selo:"Narrativas",data:"2025-10-17T18:00"},
-      {title:"Narrativas: Aberfan",selo:"Narrativas",data:"2025-10-31T18:00"},
-      {title:"Inexplicável: Quarto 1046 (estreia)",selo:"Inexplicável",data:"2025-11-10T18:00"},
-      {title:"Narrativas: Chico Mendes",selo:"Narrativas",data:"2025-11-14T18:00"}
-    ];
-    productions = sample.map(x=>({ ...x, when:parseISOLocal(x.data), stages:{} }));
-    historico = [{ mes:"2025-10", publicados:["Ed Gein","Genivaldo","Aberfan"] }];
-    await saveAll();
+  function tryLogin(){
+    const v = pwdInput.value;
+    if(!v){ errBox.textContent = "Digite a senha"; return; }
+    if(!isOK(v)){ errBox.textContent = "Senha incorreta"; return; }
+    errBox.textContent = "";
+    grantAccess();
   }
-  renderAll(); renderTable();
-}
-setInterval(()=>{ if(document.getElementById('app').style.display==="block") counters(); },1000);
-</script>
+
+  // listeners
+  btnGo?.addEventListener('click', tryLogin);
+  pwdInput?.addEventListener('keydown', (e) => { if(e.key === "Enter") tryLogin(); });
+
+  // auto-login se já autenticado
+  (function autoLogin(){
+    if (sessionStorage.getItem("candieiro_ok") === "1") {
+      landing.style.display="none"; app.style.display="block"; return;
+    }
+    const q = new URLSearchParams(location.search);
+    const passQ = q.get('pass') || (location.hash ? location.hash.slice(1) : "");
+    if (isOK(passQ)) grantAccess();
+  })();
+  </script>
 </body>
 </html>
