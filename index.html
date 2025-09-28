@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Estúdios Candieiro — Painel de Produção</title>
+<meta name="color-scheme" content="dark light">
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#121720; --ink:#e9edf3; --muted:#9fb0c8;
+    --accent:#59b2ff; --ok:#39d98a; --warn:#ffd166; --line:#1f2a3d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:system-ui,-apple-system,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink)}
+  .wrap{max-width:960px; margin:40px auto; padding:0 16px}
+  header{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .logo{width:36px; height:36px; border-radius:8px; background:radial-gradient(60% 60% at 30% 30%,#ffd166 0%,#ff8a00 55%,#6b3800 100%); box-shadow:0 0 30px rgba(255,153,0,.25)}
+  h1{font-size:22px; margin:0}
+  .sub{color:var(--muted); font-size:13px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .row{display:flex; gap:16px; flex-wrap:wrap}
+  .row .card{flex:1 1 280px}
+  .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1420; border:1px solid var(--line); color:var(--muted); font-size:12px}
+  .big{font-size:34px; font-weight:800; letter-spacing:.2px}
+  .bar{height:12px; background:#0e1420; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+  .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),#8ae1ff); transition:width .6s ease}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:860px){ .grid2{grid-template-columns:1fr} .big{font-size:28px} }
+  ul.list{list-style:none; padding:0; margin:0}
+  .list li{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px dashed #223046}
+  .list li:last-child{border-bottom:none}
+  .when{color:var(--muted); font-size:14px}
+  .tag{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid #23314a; background:#0a111d; color:#b7c7de}
+  .muted{color:var(--muted)}
+  .small{font-size:12px}
+  .footer{margin-top:16px; font-size:12px; color:#8aa0bf}
+  button,.btn{background:#152238; color:#cfe6ff; border:1px solid #254064; padding:10px 14px; border-radius:10px; cursor:pointer}
+  button:hover,.btn:hover{filter:brightness(1.08)}
+  input,select{width:100%; background:#0e1420; color:#cfe6ff; border:1px solid var(--line); border-radius:10px; padding:10px}
+  label{font-size:12px; color:#9fb0c8}
+  .controls{display:flex; gap:8px; flex-wrap:wrap}
+  .controls .btn{padding:8px 10px}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{padding:10px; border-bottom:1px dashed #223046; text-align:left}
+  th{color:#a9bdd7; font-weight:600}
+  .right{display:flex; gap:8px; align-items:center}
+  .danger{background:#3a1520; border-color:#5a1d2f; color:#ffd3d9}
+  .ok{color:var(--ok)} .warn{color:var(--warn)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Estúdios Candieiro</h1>
+          <div class="sub">Painel de Produção — Linha do tempo das publicações (fuso: America/Fortaleza)</div>
+        </div>
+      </div>
+      <button id="toggleMode" class="btn">Alternar tema</button>
+    </header>
+
+    <div class="row">
+      <div class="card">
+        <div class="pill">Próximo vídeo em</div>
+        <div id="countdown" class="big" style="margin:8px 0 6px">--:--:--</div>
+        <div class="muted small" id="nextLabel">Carregando…</div>
+      </div>
+      <div class="card">
+        <div class="pill">Progresso entre lançamentos</div>
+        <div class="bar" style="margin:10px 0 8px"><span id="progress"></span></div>
+        <div class="muted small" id="progressLabel">—</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="pill">Linha do tempo</div>
+        <ul class="list" id="timeline"></ul>
+      </div>
+
+      <div class="card">
+        <div class="pill">Painel de edição (local)</div>
+        <div style="margin:10px 0 12px" class="controls">
+          <button id="addSample" class="btn">Carregar exemplo (Out/Nov)</button>
+          <button id="exportBtn" class="btn">Exportar JSON</button>
+          <label for="importFile" class="btn">Importar JSON<input id="importFile" type="file" accept=".json" style="display:none"></label>
+        </div>
+        <form id="form" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px">
+          <div>
+            <label>Título</label>
+            <input id="fTitulo" placeholder="Narrativas: Chico Mendes">
+          </div>
+          <div>
+            <label>Selo</label>
+            <select id="fSelo">
+              <option>Narrativas</option>
+              <option>Arquivo Criminal</option>
+              <option>Inexplicável</option>
+              <option>Prévia</option>
+              <option>Abertos</option>
+            </select>
+          </div>
+          <div>
+            <label>Data & hora (YYYY-MM-DDTHH:MM)</label>
+            <input id="fData" placeholder="2025-11-14T18:00">
+          </div>
+          <div class="right">
+            <button type="button" id="saveBtn" class="btn">Salvar/Adicionar</button>
+            <button type="button" id="clearBtn" class="btn danger">Limpar tudo</button>
+          </div>
+        </form>
+        <table id="tbl">
+          <thead><tr><th>Título</th><th>Selo</th><th>Data (Fortaleza)</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="footer">As alterações ficam salvas no seu navegador (localStorage). Para usar em outra máquina, exporte o JSON e importe lá.</p>
+      </div>
+    </div>
+
+    <p class="footer">© Estúdios Candieiro — Painel interno de produção.</p>
+  </div>
+
+<script>
+/* ====== Config geral ====== */
+const tz = "America/Fortaleza";
+const locale = "pt-BR";
+const KEY = "candieiro_releases_v1";
+
+/* ====== Estado ====== */
+let events = [];
+
+/* ====== Helpers ====== */
+function fmtDate(d){
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: tz, weekday:'short', day:'2-digit', month:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit'
+  }).format(d).replace(',', '');
+}
+function humanDiff(ms){
+  const s = Math.max(0, Math.floor(ms/1000));
+  const dd = Math.floor(s/86400);
+  const hh = Math.floor((s%86400)/3600);
+  const mm = Math.floor((s%3600)/60);
+  const ss = s%60;
+  return `${dd}d ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
+function between(a,b,now){
+  const total = b - a;
+  const passed = Math.max(0, now - a);
+  return { total, passed, pct: total>0 ? Math.min(100, Math.max(0, (passed/total)*100)) : 100 };
+}
+function parseISOLocal(s){
+  const [d,t]= (s||"").split("T"); if(!d||!t) return null;
+  const [Y,M,D]=d.split("-").map(Number); const [h,m]=t.split(":").map(Number);
+  // Fortaleza = UTC-03: cria em UTC somando 3 horas
+  return new Date(Date.UTC(Y,(M||1)-1,D||1,(h||0)+3,(m||0)||0,0));
+}
+
+/* ====== Render ====== */
+function renderTable(){
+  const tbody = document.querySelector("#tbl tbody"); tbody.innerHTML="";
+  events.sort((a,b)=>a.when-b.when).forEach((e,i)=>{
+    const tr=document.createElement("tr");
+    const td1=document.createElement("td"); td1.textContent=e.titulo;
+    const td2=document.createElement("td"); td2.textContent=e.selo;
+    const td3=document.createElement("td"); td3.textContent=fmtDate(e.when);
+    const td4=document.createElement("td");
+    const edit=document.createElement("button"); edit.className="btn"; edit.textContent="Editar";
+    edit.onclick=()=>{
+      document.getElementById("fTitulo").value=e.titulo;
+      document.getElementById("fSelo").value=e.selo;
+      document.getElementById("fData").value=e.data;
+      events.splice(i,1); save(); rerender();
+    };
+    const del=document.createElement("button"); del.className="btn danger"; del.textContent="Excluir";
+    del.onclick=()=>{ events.splice(i,1); save(); rerender(); };
+    td4.append(edit,del);
+    tr.append(td1,td2,td3,td4); tbody.append(tr);
+  });
+}
+function renderTimeline(now){
+  const ul=document.getElementById('timeline'); ul.innerHTML='';
+  [...events].sort((a,b)=>a.when-b.when).forEach(e=>{
+    const li=document.createElement('li');
+    const left=document.createElement('div');
+    left.innerHTML=`<strong>${e.titulo}</strong><div class="when">${fmtDate(e.when)} · ${e.selo}</div>`;
+    const right=document.createElement('div');
+    const tag=document.createElement('span'); tag.className='tag';
+    const delta=e.when-now; tag.textContent = delta>0 ? `em ${humanDiff(delta)}` : `há ${humanDiff(-delta)}`;
+    right.appendChild(tag); li.append(left,right); ul.appendChild(li);
+  });
+}
+function renderCounters(){
+  const now=new Date();
+  const sorted=[...events].sort((a,b)=>a.when-b.when);
+  const next = sorted.find(e => e.when > now) || sorted[sorted.length-1];
+  const prevs = sorted.filter(e => e.when <= now);
+  const prev = prevs.length ? prevs[prevs.length-1] : null;
+
+  const cd=document.getElementById('countdown');
+  const lbl=document.getElementById('nextLabel');
+  cd.textContent = next ? humanDiff(next.when - now) : "--:--:--";
+  lbl.textContent = next ? `Próximo: ${next.titulo} • ${fmtDate(next.when)}` : "Sem próximos eventos";
+
+  const pg=document.getElementById('progress');
+  const pgl=document.getElementById('progressLabel');
+  if(prev && next){
+    const met=between(prev.when,next.when,now);
+    pg.style.width=met.pct.toFixed(1)+'%';
+    pgl.textContent=`Desde “${prev.titulo}” até “${next.titulo}” • ${met.pct.toFixed(1)}% concluído`;
+  }else{
+    pg.style.width='0%'; pgl.textContent='Aguardando primeiro lançamento.';
+  }
+  renderTimeline(now);
+}
+
+/* ====== Storage ====== */
+function save(){ localStorage.setItem(KEY, JSON.stringify(events.map(e=>({titulo:e.titulo,selo:e.selo,data:e.data})))); }
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY); if(!raw){ events=[]; return; }
+    events = JSON.parse(raw).map(e=>({ ...e, when: parseISOLocal(e.data) })).filter(e=>e.when instanceof Date && !isNaN(e.when));
+  }catch{ events=[]; }
+}
+function rerender(){ renderTable(); renderCounters(); }
+
+/* ====== Exemplo Out/Nov ====== */
+function loadSample(){
+  const sample = [
+    { titulo:"Arquivo Criminal: Ed Gein", selo:"Arquivo Criminal", data:"2025-10-01T18:00" },
+    { titulo:"Narrativas: Caso Genivaldo", selo:"Narrativas", data:"2025-10-17T18:00" },
+    { titulo:"Narrativas: Aberfan", selo:"Narrativas", data:"2025-10-31T18:00" },
+    { titulo:"Inexplicável: Quarto 1046 (estreia)", selo:"Inexplicável", data:"2025-11-10T18:00" },
+    { titulo:"Narrativas: Chico Mendes", selo:"Narrativas", data:"2025-11-14T18:00" },
+    { titulo:"Arquivo Criminal: Amelia Dyer", selo:"Arquivo Criminal", data:"2025-11-19T18:00" },
+    { titulo:"Narrativas: Anneliese Michel", selo:"Narrativas", data:"2025-11-28T18:00" }
+  ];
+  localStorage.setItem(KEY, JSON.stringify(sample)); load(); rerender();
+}
+
+/* ====== Import/Export ====== */
+document.getElementById('exportBtn').onclick=()=>{
+  const blob=new Blob([localStorage.getItem(KEY)||"[]"],{type:"application/json"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="candieiro-releases.json"; a.click();
+};
+document.getElementById('importFile').onchange=(ev)=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ localStorage.setItem(KEY, r.result); load(); rerender(); };
+  r.readAsText(f);
+};
+
+/* ====== UI ====== */
+document.getElementById('addSample').onclick=loadSample;
+document.getElementById('saveBtn').onclick=()=>{
+  const t=document.getElementById('fTitulo').value.trim();
+  const s=document.getElementById('fSelo').value.trim();
+  const d=document.getElementById('fData').value.trim();
+  const when=parseISOLocal(d);
+  if(!t||!s||!when||isNaN(when)){ alert("Preencha título, selo e data no formato YYYY-MM-DDTHH:MM"); return; }
+  events.push({titulo:t,selo:s,data:d,when}); save(); rerender();
+  document.getElementById('form').reset();
+};
+document.getElementById('clearBtn').onclick=()=>{ if(confirm("Apagar todos os eventos salvos localmente?")){ localStorage.removeItem(KEY); load(); rerender(); } };
+document.getElementById('toggleMode').onclick=()=>{
+  const root=document.documentElement;
+  const dark = getComputedStyle(root).getPropertyValue('--bg').trim()==='#0b0e13';
+  if(dark){
+    root.style.setProperty('--bg','#f6f8fb'); root.style.setProperty('--panel','#ffffff');
+    root.style.setProperty('--ink','#101623'); root.style.setProperty('--muted','#4a5a73');
+    root.style.setProperty('--accent','#2563eb'); root.style.setProperty('--ok','#16a34a');
+    root.style.setProperty('--warn','#b45309'); root.style.setProperty('--line','#d7dfeb');
+  }else{
+    root.style.setProperty('--bg','#0b0e13'); root.style.setProperty('--panel','#121720');
+    root.style.setProperty('--ink','#e9edf3'); root.style.setProperty('--muted','#9fb0c8');
+    root.style.setProperty('--accent','#59b2ff'); root.style.setProperty('--ok','#39d98a');
+    root.style.setProperty('--warn','#ffd166'); root.style.setProperty('--line','#1f2a3d');
+  }
+};
+
+/* ====== Boot ====== */
+load(); rerender();
+setInterval(renderCounters, 1000);
+</script>
+</body>
+</html>
